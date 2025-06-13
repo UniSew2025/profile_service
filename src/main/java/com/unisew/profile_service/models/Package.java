@@ -1,7 +1,6 @@
-package com.unisew.contract_service.models;
+package com.unisew.profile_service.models;
 
-import com.unisew.contract_service.enums.RuleSubject;
-import com.unisew.contract_service.enums.Status;
+import com.unisew.profile_service.enums.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -20,7 +21,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -28,9 +28,9 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`rule`")
+@Table(name = "`package`")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Rule {
+public class Package {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,19 +38,26 @@ public class Rule {
 
     String name;
 
-    String description;
+    @Column(name = "`headerContent`")
+    String headerContent;
 
-    @Enumerated(EnumType.STRING)
-    RuleSubject subject;
+    @Column(name = "`deliveryDuration`")
+    int deliveryDuration;
 
-    @Column(name = "`creation_date`")
-    LocalDate creationDate;
+    @Column(name = "`revisionTime`")
+    int revisionTime;
+
+    long fee;
 
     @Enumerated(EnumType.STRING)
     Status status;
 
-    @OneToMany(mappedBy = "rule")
+    @ManyToOne
+    @JoinColumn(name = "`designer_id`")
+    Designer designer;
+
+    @OneToMany(mappedBy = "pkg")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    List<ContractRule> contractRules;
+    List<PackageRule> rules;
 }

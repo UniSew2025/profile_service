@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.unisew</groupId>
-    <artifactId>contract_service</artifactId>
+    <artifactId>profile_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>contract_service</name>
-    <description>contract_service</description>
+    <name>profile_service</name>
+    <description>profile_service</description>
     <url/>
     <licenses>
         <license/>

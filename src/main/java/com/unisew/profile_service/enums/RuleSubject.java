@@ -1,4 +1,4 @@
-package com.unisew.contract_service.enums;
+package com.unisew.profile_service.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
