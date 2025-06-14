@@ -28,16 +28,13 @@ public class Profile {
 
     @Id
     @Column(name = "`account_id`")
-    Integer id;
+    int accountId;
 
     String name;
 
     String phone;
 
     String avatar;
-
-    @Column(name = "`account_id`")
-    int accountId;
 
     @OneToOne(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
