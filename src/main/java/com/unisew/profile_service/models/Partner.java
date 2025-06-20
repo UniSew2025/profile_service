@@ -35,6 +35,8 @@ public class Partner {
 
     String province;
 
+    boolean isBusy;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "`profile_id`")

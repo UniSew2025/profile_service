@@ -25,6 +25,9 @@ public class Designer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
+    @Column(name = "`thumbnail_img`")
+    String thumbnail_img;
+
     @Column(name = "`short_preview`")
     String shortPreview;
 

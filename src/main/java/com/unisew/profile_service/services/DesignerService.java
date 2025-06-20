@@ -10,4 +10,6 @@ public interface DesignerService {
 
     ResponseEntity<ResponseObject> getAllDesignerProfile();
 
+    //Lấy danh sách tất cả các garment ko busy, lấy càng nhiều field càng tốt
+
 }
