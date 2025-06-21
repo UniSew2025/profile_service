@@ -4,7 +4,7 @@ import com.unisew.profile_service.models.*;
 import com.unisew.profile_service.models.Package;
 import com.unisew.profile_service.repositories.*;
 import com.unisew.profile_service.responses.ResponseObject;
-import com.unisew.profile_service.services.DesignerService;
+import com.unisew.profile_service.services.ProfileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,12 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class DesignerServiceImpl implements DesignerService {
+public class ProfileServiceImpl implements ProfileService {
 
     DesignerRepo designerRepo;
 
@@ -31,17 +30,22 @@ public class DesignerServiceImpl implements DesignerService {
 
     PackageServiceRepo packageServiceRepo;
 
+    PartnerRepo partnerRepo;
+
+    // --------------------------------------------Designer Profile--------------------------------------------
     @Override
     public ResponseEntity<ResponseObject> getAllDesignerProfile() {
         List<Designer> designers = designerRepo.findAll();
         return ResponseEntity.ok().body(
                 ResponseObject.builder()
                         .status("200")
-                        .message("Designer profiles fetched successfully")
+                        .message("Get designer profiles successfully")
                         .data(buildDesigners(designers))
                         .build()
         );
     }
+
+
 
     private List<Map<String, Object>> buildDesigners(List<Designer> designers) {
         return designers.stream()
@@ -96,6 +100,37 @@ public class DesignerServiceImpl implements DesignerService {
                 })
                 .toList();
     }
+
+    //--------------------------------------------Garment Profile--------------------------------------------
+
+    @Override
+    public ResponseEntity<ResponseObject> getAllGarmentProfile() {
+        List<Partner> garments = partnerRepo.findAll();
+        return ResponseEntity.ok().body(
+                ResponseObject.builder()
+                        .status("200")
+                        .message("Get garment profiles successfully")
+                        .data(buildGarments(garments))
+                        .build()
+        );
+    }
+
+    private List<Map<String, Object>> buildGarments(List<Partner> partners) {
+        return partners.stream()
+                .map(partner -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", partner.getId());
+                    map.put("street", partner.getStreet());
+                    map.put("ward", partner.getWard());
+                    map.put("district", partner.getDistrict());
+                    map.put("province", partner.getProvince());
+                    map.put("isBusy", partner.isBusy());
+                    map.put("profile", buildProfile(partner.getProfile()));
+                    return map;
+                })
+                .toList();
+    }
+
 
 
 }
