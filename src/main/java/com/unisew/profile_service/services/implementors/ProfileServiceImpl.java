@@ -237,4 +237,6 @@ public class ProfileServiceImpl implements ProfileService {
         partnerData.put("province", partner.getProvince());
         return partnerData;
     }
+
+    // --------------------------------------------Profile--------------------------------------------
 }
