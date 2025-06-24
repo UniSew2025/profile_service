@@ -195,9 +195,11 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         Map<String, Object> profileData = buildProfileResponse(profile);
-        if(profile.getDesigner() != null){
+        if(profile.getDesigner() != null && profile.getPartner() == null){
             profileData.put("designer", buildDesignerResponse(profile.getDesigner()));
-        }else {
+        }
+
+        if(profile.getDesigner() == null && profile.getPartner() != null) {
             profileData.put("partner", buildPartnerResponse(profile.getPartner()));
         }
 
