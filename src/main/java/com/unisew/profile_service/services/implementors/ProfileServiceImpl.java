@@ -9,6 +9,7 @@ import com.unisew.profile_service.services.ProfileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -226,6 +227,8 @@ public class ProfileServiceImpl implements ProfileService {
         Map<String, Object> designerData = new HashMap<>();
         designerData.put("id", designer.getId());
         designerData.put("bio", designer.getBio());
+        designerData.put("startTime", designer.getStartTime());
+        designerData.put("endTime", designer.getEndTime());
         designerData.put("shortPreview", designer.getShortPreview());
         return designerData;
     }
@@ -240,5 +243,6 @@ public class ProfileServiceImpl implements ProfileService {
         return partnerData;
     }
 
-    // --------------------------------------------Profile--------------------------------------------
+
+
 }

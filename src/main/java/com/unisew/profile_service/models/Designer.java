@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -32,6 +33,10 @@ public class Designer {
     String shortPreview;
 
     String bio;
+
+    LocalTime startTime;
+
+    LocalTime endTime;
 
     @OneToOne
     @JoinColumn(name = "`profile_id`")

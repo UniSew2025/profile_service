@@ -13,4 +13,5 @@ public interface ProfileService {
     ResponseEntity<ResponseObject> createProfile(CreateProfileRequest request);
 
     ResponseEntity<ResponseObject> getProfileInfo(int accountId);
+
 }

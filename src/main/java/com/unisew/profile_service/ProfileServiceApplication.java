@@ -19,6 +19,7 @@ import org.springframework.data.repository.query.parser.Part;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @SpringBootApplication
@@ -83,6 +84,8 @@ public class ProfileServiceApplication {
                         Designer.builder()
                         .shortPreview("Creative uniform designer")
                         .bio("Experienced in logo & uniform for schools.")
+                                .startTime(LocalTime.of(6, 0))
+                                .endTime(LocalTime.of(18, 0))
                         .profile(profile3)
                         .build()
                 );
