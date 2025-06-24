@@ -39,9 +39,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ResponseEntity<ResponseObject> getAllDesignerProfile() {
         List<Designer> designers = designerRepo.findAll();
-        return ResponseEntity.ok().body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
-                        .status("200")
                         .message("Get designer profiles successfully")
                         .data(buildDesigners(designers))
                         .build()
@@ -108,9 +107,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ResponseEntity<ResponseObject> getAllGarmentProfile() {
         List<Partner> garments = partnerRepo.findAll();
-        return ResponseEntity.ok().body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
-                        .status("200")
                         .message("Get garment profiles successfully")
                         .data(buildGarments(garments))
                         .build()
@@ -153,9 +151,8 @@ public class ProfileServiceImpl implements ProfileService {
             profileData.put("partner", createPartnerByProfile(profile));
         }
 
-        return ResponseEntity.ok().body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
-                        .status("201")
                         .message("Profile created successfully")
                         .data(profileData)
                         .build()
@@ -204,9 +201,8 @@ public class ProfileServiceImpl implements ProfileService {
             profileData.put("partner", buildPartnerResponse(profile.getPartner()));
         }
 
-        return ResponseEntity.ok().body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
-                        .status("200")
                         .message("")
                         .data(profileData)
                         .build()
@@ -227,6 +223,7 @@ public class ProfileServiceImpl implements ProfileService {
         Map<String, Object> designerData = new HashMap<>();
         designerData.put("id", designer.getId());
         designerData.put("bio", designer.getBio());
+        designerData.put("thumbnail", designer.getThumbnail_img());
         designerData.put("startTime", designer.getStartTime());
         designerData.put("endTime", designer.getEndTime());
         designerData.put("shortPreview", designer.getShortPreview());
