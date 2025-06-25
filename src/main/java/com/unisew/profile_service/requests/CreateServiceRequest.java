@@ -1,4 +1,4 @@
-package com.unisew.profile_service.responses;
+package com.unisew.profile_service.requests;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResponseObject {
-    String message;
-    Object data;
+public class CreateServiceRequest {
+
+    String rule;
+    String status;
 }
