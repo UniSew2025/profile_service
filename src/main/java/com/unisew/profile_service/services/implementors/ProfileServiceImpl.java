@@ -75,6 +75,7 @@ public class ProfileServiceImpl implements ProfileService {
         map.put("name", profile.getName());
         map.put("phone", profile.getPhone());
         map.put("avatar", profile.getAvatar());
+        map.put("isBusy", profile.isBusy());
         return map;
     }
 
@@ -131,7 +132,6 @@ public class ProfileServiceImpl implements ProfileService {
                     map.put("ward", partner.getWard());
                     map.put("district", partner.getDistrict());
                     map.put("province", partner.getProvince());
-                    map.put("isBusy", partner.isBusy());
                     map.put("profile", buildProfile(partner.getProfile()));
                     return map;
                 })
@@ -327,6 +327,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private Map<String, Object> buildPackage(Package pkg) {
         Map<String, Object> data = new HashMap<>();
+        data.put("id", pkg.getId());
         data.put("pkgName", pkg.getName());
         data.put("headerContent", pkg.getHeaderContent());
         data.put("deliveryDuration", pkg.getDeliveryDuration());
@@ -340,6 +341,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private Map<String, Object> buildDesigner(Designer designer) {
         Map<String, Object> data = new HashMap<>();
+        data.put("id", designer.getId());
         data.put("name", designer.getProfile().getName());
         data.put("phone", designer.getProfile().getPhone());
         data.put("avatar", designer.getProfile().getAvatar());
