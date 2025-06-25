@@ -97,7 +97,6 @@ public class ProfileServiceApplication {
                                 .ward("Ward 9")
                                 .district("District 10")
                                 .province("Ho Chi Minh City")
-                                .isBusy(false)
                                 .profile(profile4)
                                 .build()
                 );
