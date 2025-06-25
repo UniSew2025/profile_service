@@ -49,6 +49,7 @@ public class ProfileServiceApplication {
                         .name("Alice Nguyen")
                         .phone("0909000001")
                         .avatar("https://picsum.photos/seed/1/200")
+                                .isBusy(false)
                         .build()
                 );
 
@@ -58,6 +59,7 @@ public class ProfileServiceApplication {
                                 .name("Vikor")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
+                                .isBusy(false)
                                 .build()
                 );
 
@@ -67,6 +69,7 @@ public class ProfileServiceApplication {
                                 .name("Ken")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
+                                .isBusy(false)
                                 .build()
                 );
 
@@ -76,6 +79,7 @@ public class ProfileServiceApplication {
                                 .name("Garment TQH")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
+                                .isBusy(false)
                                 .build()
                 );
 
@@ -97,7 +101,6 @@ public class ProfileServiceApplication {
                                 .ward("Ward 9")
                                 .district("District 10")
                                 .province("Ho Chi Minh City")
-                                .isBusy(false)
                                 .profile(profile4)
                                 .build()
                 );
