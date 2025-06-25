@@ -1,11 +1,19 @@
 package com.unisew.profile_service.controllers;
 
+import com.unisew.profile_service.requests.CreatePackageRequest;
+import com.unisew.profile_service.requests.CreateServiceRequest;
+import com.unisew.profile_service.requests.UpdatePackageRequest;
+import com.unisew.profile_service.requests.UpdateServiceRequest;
 import com.unisew.profile_service.responses.ResponseObject;
 import com.unisew.profile_service.services.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
 
     private final ProfileService profileService;
+
 
     @GetMapping("/designer/list")
     public ResponseEntity<ResponseObject> getAllDesignerProfile() {
@@ -26,4 +35,38 @@ public class ProfileController {
         return profileService.getAllGarmentProfile();
     }
 
+    @GetMapping("")
+    public ResponseEntity<ResponseObject> getAllService() {
+        return profileService.getAllService();
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ResponseObject> createService(@RequestBody CreateServiceRequest request) {
+        return profileService.createService(request);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<ResponseObject> updateService(@RequestBody UpdateServiceRequest request) {
+        return profileService.updateService(request);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseObject> getPackageInfo(@PathVariable("id") int id) {
+        return profileService.getPackageInfo(id);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ResponseObject> createPackage(@RequestBody CreatePackageRequest request) {
+        return profileService.createPackage(request);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<ResponseObject> updatePackage(@RequestBody UpdatePackageRequest request) {
+        return profileService.updatePackage(request);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseObject> disablePackage(@PathVariable("id") int id) {
+        return profileService.disablePackage(id);
+    }
 }
