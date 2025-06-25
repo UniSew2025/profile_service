@@ -35,37 +35,37 @@ public class ProfileController {
         return profileService.getAllGarmentProfile();
     }
 
-    @GetMapping("")
+    @GetMapping("/service")
     public ResponseEntity<ResponseObject> getAllService() {
         return profileService.getAllService();
     }
 
-    @PostMapping("")
+    @PostMapping("/service")
     public ResponseEntity<ResponseObject> createService(@RequestBody CreateServiceRequest request) {
         return profileService.createService(request);
     }
 
-    @PutMapping("")
+    @PutMapping("/service")
     public ResponseEntity<ResponseObject> updateService(@RequestBody UpdateServiceRequest request) {
         return profileService.updateService(request);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/package/{id}")
     public ResponseEntity<ResponseObject> getPackageInfo(@PathVariable("id") int id) {
         return profileService.getPackageInfo(id);
     }
 
-    @PostMapping("")
+    @PostMapping("/package")
     public ResponseEntity<ResponseObject> createPackage(@RequestBody CreatePackageRequest request) {
         return profileService.createPackage(request);
     }
 
-    @PutMapping("")
+    @PutMapping("/package")
     public ResponseEntity<ResponseObject> updatePackage(@RequestBody UpdatePackageRequest request) {
         return profileService.updatePackage(request);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/package/{id}")
     public ResponseEntity<ResponseObject> disablePackage(@PathVariable("id") int id) {
         return profileService.disablePackage(id);
     }
