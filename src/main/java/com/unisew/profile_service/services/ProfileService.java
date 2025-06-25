@@ -8,15 +8,17 @@ import com.unisew.profile_service.requests.UpdateServiceRequest;
 import com.unisew.profile_service.responses.ResponseObject;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 public interface ProfileService {
 
     ResponseEntity<ResponseObject> getAllDesignerProfile();
 
     ResponseEntity<ResponseObject> getAllGarmentProfile();
 
-    ResponseEntity<ResponseObject> createProfile(CreateProfileRequest request);
+    Map<String, Object> createProfile(CreateProfileRequest request);
 
-    ResponseEntity<ResponseObject> getProfileInfo(int accountId);
+    Map<String, Object> getProfileInfo(int accountId);
 
     ResponseEntity<ResponseObject> getPackageInfo(int id);
 

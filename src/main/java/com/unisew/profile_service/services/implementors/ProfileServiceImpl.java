@@ -141,7 +141,7 @@ public class ProfileServiceImpl implements ProfileService {
     // --------------------------------------------User Profile--------------------------------------------
     @Override
     @Transactional
-    public ResponseEntity<ResponseObject> createProfile(CreateProfileRequest request) {
+    public Map<String, Object> createProfile(CreateProfileRequest request) {
         Profile profile = profileRepo.save(
                 Profile.builder()
                         .accountId(request.getAccountId())
@@ -158,12 +158,7 @@ public class ProfileServiceImpl implements ProfileService {
             profileData.put("partner", createPartnerByProfile(profile));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                ResponseObject.builder()
-                        .message("Profile created successfully")
-                        .data(profileData)
-                        .build()
-        );
+        return profileData;
     }
 
     private Map<String, Object> createPartnerByProfile(Profile profile) {
@@ -193,10 +188,10 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ResponseEntity<ResponseObject> getProfileInfo(int accountId) {
+    public Map<String, Object> getProfileInfo(int accountId) {
         Profile profile = profileRepo.findByAccountId(accountId).orElse(null);
         if (profile == null) {
-            return ResponseEntity.ok().body(null);
+            return null;
         }
 
         Map<String, Object> profileData = buildProfileResponse(profile);
@@ -208,12 +203,7 @@ public class ProfileServiceImpl implements ProfileService {
             profileData.put("partner", buildPartnerResponse(profile.getPartner()));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                ResponseObject.builder()
-                        .message("")
-                        .data(profileData)
-                        .build()
-        );
+        return profileData;
     }
 
     private Map<String, Object> buildProfileResponse(Profile profile) {

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v2/profile")
 @RequiredArgsConstructor
@@ -20,12 +22,12 @@ public class InternalController {
     private final ProfileService profileService;
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createProfile(@RequestBody CreateProfileRequest request) {
+    public Map<String, Object> createProfile(@RequestBody CreateProfileRequest request) {
         return profileService.createProfile(request);
     }
 
     @GetMapping("")
-    public ResponseEntity<ResponseObject> getProfile(@RequestParam(name = "accountId") int accountId) {
+    public Map<String, Object> getProfile(@RequestParam(name = "accountId") int accountId) {
         return profileService.getProfileInfo(accountId);
     }
 }
