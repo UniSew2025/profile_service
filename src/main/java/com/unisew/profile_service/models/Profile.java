@@ -32,6 +32,9 @@ public class Profile {
 
     String avatar;
 
+    @Column(name = "`busy`")
+    boolean isBusy;
+
     @OneToOne(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
