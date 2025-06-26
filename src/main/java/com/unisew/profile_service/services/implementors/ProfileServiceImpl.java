@@ -314,7 +314,6 @@ public class ProfileServiceImpl implements ProfileService {
         );
     }
 
-
     private Map<String, Object> buildPackage(Package pkg) {
         Map<String, Object> data = new HashMap<>();
         data.put("id", pkg.getId());
@@ -354,6 +353,8 @@ public class ProfileServiceImpl implements ProfileService {
                 })
                 .toList();
     }
+
+
 
     @Override
     @Transactional
