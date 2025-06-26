@@ -49,6 +49,7 @@ public class ProfileServiceApplication {
                         .name("Alice Nguyen")
                         .phone("0909000001")
                         .avatar("https://picsum.photos/seed/1/200")
+                                .isBusy(false)
                         .build()
                 );
 
@@ -58,6 +59,7 @@ public class ProfileServiceApplication {
                                 .name("Vikor")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
+                                .isBusy(false)
                                 .build()
                 );
 
@@ -67,6 +69,7 @@ public class ProfileServiceApplication {
                                 .name("Ken")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
+                                .isBusy(false)
                                 .build()
                 );
 
@@ -76,6 +79,7 @@ public class ProfileServiceApplication {
                                 .name("Garment TQH")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
+                                .isBusy(false)
                                 .build()
                 );
 
@@ -124,18 +128,30 @@ public class ProfileServiceApplication {
                                 .headerContent("Design 1 logo, 1 uniform mockup, 2 revisions")
                                 .deliveryDuration(5)
                                 .revisionTime(2)
-                                .fee(1000000L)
+                                .fee(1000000)
                                 .status(Status.ACCOUNT_ACTIVE)
                                 .designer(designer1)
                                 .build()
                 );
                 Package pkg2 = packageRepo.save(
                         Package.builder()
+                                .name("Standard Design")
+                                .headerContent("Design 2 logos, 3 uniform mockups, 5 revisions, color consultation")
+                                .deliveryDuration(7)
+                                .revisionTime(3)
+                                .fee(1500000)
+                                .status(Status.ACCOUNT_ACTIVE)
+                                .designer(designer1)
+                                .build()
+                );
+
+                Package pkg3 = packageRepo.save(
+                        Package.builder()
                                 .name("Premium Design")
                                 .headerContent("Design 2 logos, 3 uniform mockups, 5 revisions, color consultation")
                                 .deliveryDuration(7)
                                 .revisionTime(5)
-                                .fee(2500000L)
+                                .fee(2500000)
                                 .status(Status.ACCOUNT_ACTIVE)
                                 .designer(designer1)
                                 .build()
@@ -163,6 +179,19 @@ public class ProfileServiceApplication {
                 PackageService packageService2 = packageServiceRepo.save(
                         PackageService.builder()
                                 .id(pkgServId2)
+                                .pkg(pkg2)
+                                .service(service2)
+                                .build()
+                );
+
+                PackageService.ID pkgServId3 = PackageService.ID.builder()
+                        .packageId(pkg2.getId())
+                        .serviceId(service2.getId())
+                        .build();
+
+                PackageService packageService3 = packageServiceRepo.save(
+                        PackageService.builder()
+                                .id(pkgServId3)
                                 .pkg(pkg2)
                                 .service(service2)
                                 .build()
