@@ -165,7 +165,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
         designer.setStartTime(request.getStartDate());
         designer.setEndTime(request.getEndDate());
-        designer.setThumbnail_img(request.getThumbnail());
+        designer.setThumbnail_img("");
         designer.setBio(request.getBio());
         designer.setShortPreview(request.getShortProfile());
 
@@ -342,16 +342,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     //---------------------------------------------Package--------------------------------------------
     @Override
-    public ResponseEntity<ResponseObject> getAllPackages(int accountId) {
-        Profile profile = profileRepo.findByAccountId(accountId).orElse(null);
-        if (profile == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    ResponseObject.builder()
-                            .message("Profile not found for this account")
-                            .build()
-            );
-        }
-        List<Package> packages = packageRepo.findAllByDesigner_Profile_Id(profile.getId());
+    public ResponseEntity<ResponseObject> getAllPackages(int designerId) {
+
+        List<Package> packages = packageRepo.findAllByDesigner_Id(designerId);
          if (packages.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     ResponseObject.builder()
@@ -360,6 +353,7 @@ public class ProfileServiceImpl implements ProfileService {
                             .build()
             );
          }
+        System.out.println("Packages found: " + packages.size());
         List<Map<String, Object>> data = packages.stream()
                 .map(this::buildPackage)
                 .toList();

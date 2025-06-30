@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PackageRepo extends JpaRepository<Package, Integer> {
-    List<Package> findAllByDesigner_Profile_Id(int id);
+    List<Package> findAllByDesigner_Id(int id);
 }
