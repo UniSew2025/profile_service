@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface ProfileRepo extends JpaRepository<Profile, Integer> {
     Optional<Profile> findByAccountId(int accountId);
+
+    Optional<Profile> findByDesigner_Id(int designerId);
 }

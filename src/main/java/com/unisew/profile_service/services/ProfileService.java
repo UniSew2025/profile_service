@@ -23,7 +23,7 @@ public interface ProfileService {
 
     ResponseEntity<ResponseObject> updateDesignerProfile(UpdateDesignerProfileRequest request);
 
-    ResponseEntity<ResponseObject> getAllPackages(int accountId);
+    ResponseEntity<ResponseObject> getAllPackages(int designerId);
 
     ResponseEntity<ResponseObject> getPackageInfo(int packageId);
 

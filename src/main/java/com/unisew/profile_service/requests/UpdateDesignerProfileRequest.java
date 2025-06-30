@@ -19,7 +19,7 @@ public class UpdateDesignerProfileRequest {
 
     int accountId;
 
-    String thumbnail;
+//    String thumbnail;
 
     String bio;
 
