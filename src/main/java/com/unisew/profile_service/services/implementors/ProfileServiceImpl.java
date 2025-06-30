@@ -8,12 +8,15 @@ import com.unisew.profile_service.requests.CreatePackageRequest;
 import com.unisew.profile_service.requests.CreateProfileRequest;
 import com.unisew.profile_service.requests.CreateServiceRequest;
 import com.unisew.profile_service.requests.UpdatePackageRequest;
+import com.unisew.profile_service.requests.UpdateDesignerProfileRequest;
 import com.unisew.profile_service.requests.UpdateServiceRequest;
 import com.unisew.profile_service.responses.ResponseObject;
 import com.unisew.profile_service.services.ProfileService;
+import com.unisew.profile_service.validations.UpdateDesignerValidation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -138,7 +141,47 @@ public class ProfileServiceImpl implements ProfileService {
                 .toList();
     }
 
-    // --------------------------------------------User Profile--------------------------------------------
+    //--------------------------------------------Update Designer Profile--------------------------------------------
+    @Override
+    public ResponseEntity<ResponseObject> updateDesignerProfile(UpdateDesignerProfileRequest request) {
+        String error = UpdateDesignerValidation.validate(request);
+        if (!error.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseObject.builder().message(error).build());
+        }
+
+        Profile profile = profileRepo.findByAccountId(request.getAccountId()).orElse(null);
+        if (profile == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseObject.builder().message("Profile not found for this account").build());
+        }
+        profile.setName(request.getName());
+        profile.setPhone(request.getPhone());
+
+        Designer designer = profile.getDesigner();
+        if (designer == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseObject.builder().message("Designer not found for this account").build());
+        }
+        designer.setStartTime(request.getStartDate());
+        designer.setEndTime(request.getEndDate());
+        designer.setThumbnail_img(request.getThumbnail());
+        designer.setBio(request.getBio());
+        designer.setShortPreview(request.getShortProfile());
+
+        profileRepo.save(profile);
+        designerRepo.save(designer);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseObject.builder()
+                        .message("Update designer profile successfully")
+                        .build());
+    }
+
+
+
+
+    // --------------------------------------------Internal User Profile--------------------------------------------
     @Override
     @Transactional
     public Map<String, Object> createProfile(CreateProfileRequest request) {
@@ -152,9 +195,9 @@ public class ProfileServiceImpl implements ProfileService {
         );
 
         Map<String, Object> profileData = buildProfileResponse(profile);
-        if(request.getRole().equalsIgnoreCase("designer")){
+        if (request.getRole().equalsIgnoreCase("designer")) {
             profileData.put("designer", createDesignerByProfile(profile));
-        }else {
+        } else {
             profileData.put("partner", createPartnerByProfile(profile));
         }
 
@@ -195,11 +238,11 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         Map<String, Object> profileData = buildProfileResponse(profile);
-        if(profile.getDesigner() != null && profile.getPartner() == null){
+        if (profile.getDesigner() != null && profile.getPartner() == null) {
             profileData.put("designer", buildDesignerResponse(profile.getDesigner()));
         }
 
-        if(profile.getDesigner() == null && profile.getPartner() != null) {
+        if (profile.getDesigner() == null && profile.getPartner() != null) {
             profileData.put("partner", buildPartnerResponse(profile.getPartner()));
         }
 
@@ -238,7 +281,6 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     //---------------------------------------------Service--------------------------------------------
-
     @Override
     public ResponseEntity<ResponseObject> getAllService() {
         List<Services> services = serviceRepo.findAll();
@@ -299,6 +341,36 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     //---------------------------------------------Package--------------------------------------------
+    @Override
+    public ResponseEntity<ResponseObject> getAllPackages(int accountId) {
+        Profile profile = profileRepo.findByAccountId(accountId).orElse(null);
+        if (profile == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ResponseObject.builder()
+                            .message("Profile not found for this account")
+                            .build()
+            );
+        }
+        List<Package> packages = packageRepo.findAllByDesigner_Profile_Id(profile.getId());
+         if (packages.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    ResponseObject.builder()
+                            .message("No packages found for this designer")
+                            .data(new ArrayList<>())
+                            .build()
+            );
+         }
+        List<Map<String, Object>> data = packages.stream()
+                .map(this::buildPackage)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseObject.builder()
+                        .message("Get all packages successfully")
+                        .data(data)
+                        .build());
+    }
+
 
     @Override
     public ResponseEntity<ResponseObject> getPackageInfo(int id) {
@@ -353,7 +425,6 @@ public class ProfileServiceImpl implements ProfileService {
                 })
                 .toList();
     }
-
 
 
     @Override

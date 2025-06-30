@@ -2,6 +2,7 @@ package com.unisew.profile_service.controllers;
 
 import com.unisew.profile_service.requests.CreatePackageRequest;
 import com.unisew.profile_service.requests.CreateServiceRequest;
+import com.unisew.profile_service.requests.UpdateDesignerProfileRequest;
 import com.unisew.profile_service.requests.UpdatePackageRequest;
 import com.unisew.profile_service.requests.UpdateServiceRequest;
 import com.unisew.profile_service.responses.ResponseObject;
@@ -31,6 +32,12 @@ public class ProfileController {
         return profileService.getAllDesignerProfile();
     }
 
+    @PutMapping("/designer")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('DESIGNER')")
+    public ResponseEntity<ResponseObject> updateDesignerProfile(@RequestBody UpdateDesignerProfileRequest request) {
+        return profileService.updateDesignerProfile(request);
+    }
+
     @GetMapping("/garment/list")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL')" )
     public ResponseEntity<ResponseObject> getAllGarmentProfile() {
@@ -53,6 +60,13 @@ public class ProfileController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseObject> updateService(@RequestBody UpdateServiceRequest request) {
         return profileService.updateService(request);
+    }
+
+    //-----Package
+    @GetMapping("/designer/package/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL') or hasRole('DESIGNER')")
+    public ResponseEntity<ResponseObject> getAllPackages(@PathVariable("id") int accountId) {
+        return profileService.getAllPackages(accountId);
     }
 
     @GetMapping("/package/{id}")

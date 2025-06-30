@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +34,12 @@ public class Profile {
     String phone;
 
     String avatar;
+
+    @Column(name = "`start_date`")
+    LocalTime startDate;
+
+    @Column(name = "`end_date`")
+    LocalTime endDate;
 
     @Column(name = "`busy`")
     boolean isBusy;
