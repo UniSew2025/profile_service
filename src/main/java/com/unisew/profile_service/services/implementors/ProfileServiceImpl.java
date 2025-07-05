@@ -280,6 +280,15 @@ public class ProfileServiceImpl implements ProfileService {
         return partnerData;
     }
 
+    @Override
+    public Map<String, Object> getPackage(int id) {
+        Package pkg = packageRepo.findById(id).orElse(null);
+        if (pkg == null) {
+            return null;
+        }
+        return buildPackage(pkg);
+    }
+
     //---------------------------------------------Service--------------------------------------------
     @Override
     public ResponseEntity<ResponseObject> getAllService() {

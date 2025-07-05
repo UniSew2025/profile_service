@@ -30,4 +30,10 @@ public class InternalController {
     public Map<String, Object> getProfile(@RequestParam(name = "accountId") int accountId) {
         return profileService.getProfileInfo(accountId);
     }
+
+    @GetMapping("/package")
+    public Map<String, Object> getPackage(@RequestParam(name = "packageId") int packageId) {
+        return profileService.getPackage(packageId);
+    }
+
 }

@@ -27,6 +27,8 @@ public interface ProfileService {
 
     ResponseEntity<ResponseObject> getPackageInfo(int packageId);
 
+    Map<String, Object> getPackage(int packageId);
+
     ResponseEntity<ResponseObject> createPackage(CreatePackageRequest request);
 
     ResponseEntity<ResponseObject> updatePackage(UpdatePackageRequest request);
