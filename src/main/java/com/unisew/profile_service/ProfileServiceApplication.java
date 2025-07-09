@@ -7,6 +7,7 @@ import com.unisew.profile_service.models.Profile;
 import com.unisew.profile_service.models.Services;
 import com.unisew.profile_service.models.Package;
 import com.unisew.profile_service.models.PackageService;
+import com.unisew.profile_service.models.ThumbnailImage;
 import com.unisew.profile_service.repositories.*;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -32,6 +34,7 @@ public class ProfileServiceApplication {
     private final PackageRepo packageRepo;
     private final ServiceRepo serviceRepo;
     private final PackageServiceRepo packageServiceRepo;
+    private final ThumbnailImageRepo thumbnailImageRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(ProfileServiceApplication.class, args);
@@ -45,12 +48,12 @@ public class ProfileServiceApplication {
                 // 1. Tạo profile
                 Profile profile1 = profileRepo.save(
                         Profile.builder()
-                        .accountId(1)
-                        .name("Alice Nguyen")
-                        .phone("0909000001")
-                        .avatar("https://picsum.photos/seed/1/200")
+                                .accountId(1)
+                                .name("Alice Nguyen")
+                                .phone("0909000001")
+                                .avatar("https://picsum.photos/seed/1/200")
                                 .isBusy(false)
-                        .build()
+                                .build()
                 );
 
                 Profile profile2 = profileRepo.save(
@@ -86,13 +89,33 @@ public class ProfileServiceApplication {
                 //designer
                 Designer designer1 = designerRepo.save(
                         Designer.builder()
-                        .shortPreview("Creative uniform designer")
-                        .bio("Experienced in logo & uniform for schools.")
+                                .shortPreview("Creative uniform designer")
+                                .bio("Experienced in logo & uniform for schools.")
                                 .startTime(LocalTime.of(6, 0))
                                 .endTime(LocalTime.of(18, 0))
-                        .profile(profile3)
-                        .build()
+                                .rating(4)
+                                .profile(profile3)
+                                .build()
                 );
+
+                //thumbnail images
+                List<String> thumbnailUrls1 = List.of(
+                        "https://www.shutterstock.com/image-vector/technical-flat-sketch-girls-school-260nw-2287745045.jpg",
+                        "https://thumbs.dreamstime.com/b/baby-girl-s-school-uniform-design-template-vector-design-baby-girl-s-school-uniform-design-button-down-short-sleeves-template-382461332.jpg",
+                        "https://static.vecteezy.com/system/resources/previews/033/952/505/non_2x/work-or-school-uniform-front-and-back-view-illustration-vector.jpg",
+                        "https://media.istockphoto.com/id/1321431524/vector/vector-sketch-set-of-school-uniform-clothes.jpg?s=1024x1024&w=is&k=20&c=MWasRYc5U_v3Co7Ggp6CNC1DJLoVZbA4KZRw5n1OMWA="
+                );
+                List<ThumbnailImage> thumbnails = new ArrayList<>();
+                for (String url : thumbnailUrls1) {
+                    ThumbnailImage thumb = ThumbnailImage.builder()
+                            .imageUrl(url)
+                            .name("Thumbnail for " + designer1.getProfile().getName())
+                            .designer(designer1)
+                            .build();
+                    thumbnails.add(thumb);
+                }
+                thumbnailImageRepo.saveAll(thumbnails);
+
 
                 //partner
                 Partner partner1 = partnerRepo.save(
