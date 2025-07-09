@@ -3,7 +3,9 @@ package com.unisew.profile_service.controllers;
 import com.unisew.profile_service.requests.CreatePackageRequest;
 import com.unisew.profile_service.requests.CreateServiceRequest;
 import com.unisew.profile_service.requests.UpdateDesignerProfileRequest;
+import com.unisew.profile_service.requests.UpdateGarmentProfileRequest;
 import com.unisew.profile_service.requests.UpdatePackageRequest;
+import com.unisew.profile_service.requests.UpdateSchoolProfileRequest;
 import com.unisew.profile_service.requests.UpdateServiceRequest;
 import com.unisew.profile_service.responses.ResponseObject;
 import com.unisew.profile_service.services.ProfileService;
@@ -38,12 +40,26 @@ public class ProfileController {
         return profileService.updateDesignerProfile(request);
     }
 
+    @PutMapping("/school")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL')")
+    public ResponseEntity<ResponseObject> updateSchoolProfile(@RequestBody UpdateSchoolProfileRequest request) {
+        return profileService.updateSchoolProfile(request);
+    }
+
+    @PutMapping("/garment")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GARMENT')")
+    public ResponseEntity<ResponseObject> updateGarmentProfile(@RequestBody UpdateGarmentProfileRequest request) {
+        return profileService.updateGarmentProfile(request);
+    }
+
+
     @GetMapping("/garment/list")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL')" )
     public ResponseEntity<ResponseObject> getAllGarmentProfile() {
         return profileService.getAllGarmentProfile();
     }
 
+    //-----------------------------Service--------------------------------
     @GetMapping("/service")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL') or hasRole('DESIGNER')" )
     public ResponseEntity<ResponseObject> getAllService() {
@@ -62,7 +78,7 @@ public class ProfileController {
         return profileService.updateService(request);
     }
 
-    //-----Package
+    //--------------------------------Package-----------------------------
     @GetMapping("/designer/package/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL') or hasRole('DESIGNER')")
     public ResponseEntity<ResponseObject> getAllPackages(@PathVariable("id") int accountId) {

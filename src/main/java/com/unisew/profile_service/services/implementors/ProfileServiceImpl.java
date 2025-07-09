@@ -7,12 +7,16 @@ import com.unisew.profile_service.repositories.*;
 import com.unisew.profile_service.requests.CreatePackageRequest;
 import com.unisew.profile_service.requests.CreateProfileRequest;
 import com.unisew.profile_service.requests.CreateServiceRequest;
+import com.unisew.profile_service.requests.UpdateGarmentProfileRequest;
 import com.unisew.profile_service.requests.UpdatePackageRequest;
 import com.unisew.profile_service.requests.UpdateDesignerProfileRequest;
+import com.unisew.profile_service.requests.UpdateSchoolProfileRequest;
 import com.unisew.profile_service.requests.UpdateServiceRequest;
 import com.unisew.profile_service.responses.ResponseObject;
 import com.unisew.profile_service.services.ProfileService;
 import com.unisew.profile_service.validations.UpdateDesignerValidation;
+import com.unisew.profile_service.validations.UpdateGarmentValidation;
+import com.unisew.profile_service.validations.UpdateSchoolValidation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -174,11 +178,63 @@ public class ProfileServiceImpl implements ProfileService {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseObject.builder()
-                        .message("Update designer profile successfully")
+                        .message("Update profile successfully")
                         .build());
     }
 
+    //--------------------------------------------Update School Profile--------------------------------------------
+    @Override
+    public ResponseEntity<ResponseObject> updateSchoolProfile(UpdateSchoolProfileRequest request) {
+        String error = UpdateSchoolValidation.validate(request);
+        if (!error.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseObject.builder().message(error).build());
+        }
+        Profile profile = profileRepo.findByAccountId(request.getAccountId()).orElse(null);
+        if (profile == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseObject.builder().message("Profile not found for this account").build());
+        }
+        profile.setName(request.getName());
+        profile.setPhone(request.getPhone());
+        profileRepo.save(profile);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseObject.builder()
+                        .message("Update profile successfully")
+                        .build());
+    }
 
+    //--------------------------------------------Update Garment Profile--------------------------------------------
+    @Override
+    public ResponseEntity<ResponseObject> updateGarmentProfile(UpdateGarmentProfileRequest request) {
+        String error = UpdateGarmentValidation.validate(request);
+        if (!error.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseObject.builder().message(error).build());
+        }
+        Profile profile = profileRepo.findByAccountId(request.getAccountId()).orElse(null);
+        if (profile == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseObject.builder().message("Profile not found for this account").build());
+        }
+        profile.setName(request.getName());
+        profile.setPhone(request.getPhone());
+        Partner partner = profile.getPartner();
+        if (partner == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseObject.builder().message("Partner not found for this account").build());
+        }
+        partner.setStreet(request.getStreet());
+        partner.setWard(request.getWard());
+        partner.setDistrict(request.getDistrict());
+        partner.setProvince(request.getProvince());
+        partner.setProfile(profile);
+        profileRepo.save(profile);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseObject.builder()
+                        .message("Update profile successfully")
+                        .build());
+    }
 
 
     // --------------------------------------------Internal User Profile--------------------------------------------

@@ -3,9 +3,11 @@ package com.unisew.profile_service.services;
 import com.unisew.profile_service.requests.CreatePackageRequest;
 import com.unisew.profile_service.requests.CreateProfileRequest;
 import com.unisew.profile_service.requests.CreateServiceRequest;
+import com.unisew.profile_service.requests.UpdateGarmentProfileRequest;
 import com.unisew.profile_service.requests.UpdatePackageRequest;
 import com.unisew.profile_service.requests.UpdateDesignerProfileRequest;
 import com.unisew.profile_service.requests.UpdateServiceRequest;
+import com.unisew.profile_service.requests.UpdateSchoolProfileRequest;
 import com.unisew.profile_service.responses.ResponseObject;
 import org.springframework.http.ResponseEntity;
 
@@ -22,6 +24,10 @@ public interface ProfileService {
     Map<String, Object> getProfileInfo(int accountId);
 
     ResponseEntity<ResponseObject> updateDesignerProfile(UpdateDesignerProfileRequest request);
+
+    ResponseEntity<ResponseObject> updateSchoolProfile(UpdateSchoolProfileRequest request);
+
+    ResponseEntity<ResponseObject> updateGarmentProfile(UpdateGarmentProfileRequest request);
 
     ResponseEntity<ResponseObject> getAllPackages(int designerId);
 
