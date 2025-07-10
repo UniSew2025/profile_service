@@ -81,8 +81,8 @@ public class ProfileController {
     //--------------------------------Package-----------------------------
     @GetMapping("/designer/package/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL') or hasRole('DESIGNER')")
-    public ResponseEntity<ResponseObject> getAllPackages(@PathVariable("id") int accountId) {
-        return profileService.getAllPackages(accountId);
+    public ResponseEntity<ResponseObject> getAllPackages(@PathVariable("id") int designerId) {
+        return profileService.getAllPackages(designerId);
     }
 
     @GetMapping("/package/{id}")

@@ -26,9 +26,6 @@ public class Designer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "`thumbnail_img`")
-    String thumbnail_img;
-
     @Column(name = "`short_preview`")
     String shortPreview;
 
@@ -38,6 +35,8 @@ public class Designer {
 
     LocalTime endTime;
 
+    int rating;
+
     @OneToOne
     @JoinColumn(name = "`profile_id`")
     Profile profile;
@@ -46,4 +45,9 @@ public class Designer {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     List<Package> packages;
+
+    @OneToMany(mappedBy = "designer")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    List<ThumbnailImage> thumbnailImages;
 }

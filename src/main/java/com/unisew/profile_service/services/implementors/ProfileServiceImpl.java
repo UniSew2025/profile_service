@@ -69,8 +69,10 @@ public class ProfileServiceImpl implements ProfileService {
                     map.put("id", designer.getId());
                     map.put("short_review", designer.getShortPreview());
                     map.put("bio", designer.getBio());
+                    map.put("rating", designer.getRating());
                     map.put("profile", buildProfile(designer.getProfile()));
                     map.put("package", buildPackage(designer.getPackages()));
+                    map.put("thumbnails", buildThumbnailResponse(designer.getThumbnailImages()));
                     return map;
                 })
                 .toList();
@@ -167,9 +169,10 @@ public class ProfileServiceImpl implements ProfileService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Designer not found for this account").build());
         }
+        List<ThumbnailImage> thumbnailImages = new ArrayList<>();
         designer.setStartTime(request.getStartDate());
         designer.setEndTime(request.getEndDate());
-        designer.setThumbnail_img("");
+        designer.setThumbnailImages(thumbnailImages);
         designer.setBio(request.getBio());
         designer.setShortPreview(request.getShortProfile());
 
@@ -280,6 +283,7 @@ public class ProfileServiceImpl implements ProfileService {
                         .profile(profile)
                         .bio("N/A")
                         .shortPreview("N/A")
+                        .rating(0)
                         .build()
         );
 
@@ -319,11 +323,24 @@ public class ProfileServiceImpl implements ProfileService {
         Map<String, Object> designerData = new HashMap<>();
         designerData.put("id", designer.getId());
         designerData.put("bio", designer.getBio());
-        designerData.put("thumbnail", designer.getThumbnail_img());
+        designerData.put("rating", designer.getRating());
+        designerData.put("thumbnail", buildThumbnailResponse(designer.getThumbnailImages()));
         designerData.put("startTime", designer.getStartTime());
         designerData.put("endTime", designer.getEndTime());
         designerData.put("shortPreview", designer.getShortPreview());
         return designerData;
+    }
+
+    private List<Map<String, Object>> buildThumbnailResponse(List<ThumbnailImage> thumbnailImages) {
+        return thumbnailImages.stream()
+                .map(thumbnailImg -> {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("id", thumbnailImg.getId());
+                    data.put("imageUrl", thumbnailImg.getImageUrl());
+                    data.put("name", thumbnailImg.getName());
+                    return data;
+                })
+                .toList();
     }
 
     private Map<String, Object> buildPartnerResponse(Partner partner) {
@@ -466,8 +483,9 @@ public class ProfileServiceImpl implements ProfileService {
         data.put("phone", designer.getProfile().getPhone());
         data.put("avatar", designer.getProfile().getAvatar());
         data.put("shortPreview", designer.getShortPreview());
-        data.put("thumbnail", designer.getThumbnail_img());
+        data.put("thumbnail", buildThumbnailResponse(designer.getThumbnailImages()));
         data.put("bio", designer.getBio());
+        data.put("rating", designer.getRating());
         return data;
     }
 
