@@ -35,19 +35,7 @@ public class Profile {
 
     String avatar;
 
-    @Column(name = "`start_date`")
-    LocalTime startDate;
-
-    @Column(name = "`end_date`")
-    LocalTime endDate;
-
-    @Column(name = "`busy`")
-    boolean isBusy;
-
-    @OneToOne(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    Partner partner;
+    String address;
 
     @OneToOne(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude

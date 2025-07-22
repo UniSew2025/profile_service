@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,9 +68,12 @@ public class ProfileServiceImpl implements ProfileService {
                 .map(designer -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", designer.getId());
-                    map.put("short_review", designer.getShortPreview());
-                    map.put("bio", designer.getBio());
+                    map.put("outsidePreview", designer.getOutsidePreview());
+                    map.put("insidePreview", designer.getInsidePreview());
+                    map.put("startTime", designer.getStartTime());
+                    map.put("endTime", designer.getEndTime());
                     map.put("rating", designer.getRating());
+                    map.put("busy", designer.isBusy());
                     map.put("profile", buildProfile(designer.getProfile()));
                     map.put("package", buildPackage(designer.getPackages()));
                     map.put("thumbnails", buildThumbnailResponse(designer.getThumbnailImages()));
@@ -84,7 +88,6 @@ public class ProfileServiceImpl implements ProfileService {
         map.put("name", profile.getName());
         map.put("phone", profile.getPhone());
         map.put("avatar", profile.getAvatar());
-        map.put("isBusy", profile.isBusy());
         return map;
     }
 
@@ -94,9 +97,9 @@ public class ProfileServiceImpl implements ProfileService {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", pkg.getId());
                     map.put("name", pkg.getName());
-                    map.put("header_content", pkg.getHeaderContent());
-                    map.put("delivery_duration", pkg.getDeliveryDuration());
-                    map.put("revision_time", pkg.getRevisionTime());
+                    map.put("headerContent", pkg.getHeaderContent());
+                    map.put("deliveryDuration", pkg.getDeliveryDuration());
+                    map.put("revisionTime", pkg.getRevisionTime());
                     map.put("fee", pkg.getFee());
                     map.put("status", pkg.getStatus());
                     map.put("services", buildService(pkg.getId()));
@@ -123,25 +126,27 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ResponseEntity<ResponseObject> getAllGarmentProfile() {
-        List<Partner> garments = partnerRepo.findAll();
+        List<Designer> partners = designerRepo.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
                         .message("Get garment profiles successfully")
-                        .data(buildGarments(garments))
+                        .data(buildGarments(partners))
                         .build()
         );
     }
 
-    private List<Map<String, Object>> buildGarments(List<Partner> partners) {
-        return partners.stream()
-                .map(partner -> {
+    private List<Map<String, Object>> buildGarments(List<Designer> designers) {
+        return designers.stream()
+                .map(designer -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("id", partner.getId());
-                    map.put("street", partner.getStreet());
-                    map.put("ward", partner.getWard());
-                    map.put("district", partner.getDistrict());
-                    map.put("province", partner.getProvince());
-                    map.put("profile", buildProfile(partner.getProfile()));
+                    map.put("id", designer.getId());
+                    map.put("outsidePreview", designer.getOutsidePreview());
+                    map.put("insidePreview", designer.getInsidePreview());
+                    map.put("startTime", designer.getStartTime());
+                    map.put("endTime", designer.getEndTime());
+                    map.put("rating", designer.getRating());
+                    map.put("busy", designer.isBusy());
+                    map.put("profile", buildProfile(designer.getProfile()));
                     return map;
                 })
                 .toList();
@@ -163,6 +168,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
         profile.setName(request.getName());
         profile.setPhone(request.getPhone());
+        profile.setAddress(request.getAddress());
 
         Designer designer = profile.getDesigner();
         if (designer == null) {
@@ -173,8 +179,8 @@ public class ProfileServiceImpl implements ProfileService {
         designer.setStartTime(request.getStartDate());
         designer.setEndTime(request.getEndDate());
         designer.setThumbnailImages(thumbnailImages);
-        designer.setBio(request.getBio());
-        designer.setShortPreview(request.getShortProfile());
+        designer.setOutsidePreview(request.getOutsidePreview());
+        designer.setInsidePreview(request.getInsidePreview());
 
         profileRepo.save(profile);
         designerRepo.save(designer);
@@ -222,16 +228,17 @@ public class ProfileServiceImpl implements ProfileService {
         }
         profile.setName(request.getName());
         profile.setPhone(request.getPhone());
-        Partner partner = profile.getPartner();
-        if (partner == null) {
+        profile.setAddress(request.getAddress());
+        Designer designer = profile.getDesigner();
+        if (designer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Partner not found for this account").build());
         }
-        partner.setStreet(request.getStreet());
-        partner.setWard(request.getWard());
-        partner.setDistrict(request.getDistrict());
-        partner.setProvince(request.getProvince());
-        partner.setProfile(profile);
+        designer.setInsidePreview(request.getInsidePreview());
+        designer.setOutsidePreview(request.getOutsidePreview());
+        designer.setStartTime(request.getStartTime());
+        designer.setEndTime(request.getEndTime());
+        designer.setProfile(profile);
         profileRepo.save(profile);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseObject.builder()
@@ -250,44 +257,40 @@ public class ProfileServiceImpl implements ProfileService {
                         .avatar(request.getAvatar())
                         .name(request.getName())
                         .phone("N/A")
+                        .address("N/A")
                         .build()
         );
 
         Map<String, Object> profileData = buildProfileResponse(profile);
-        if (request.getRole().equalsIgnoreCase("designer")) {
-            profileData.put("designer", createDesignerByProfile(profile));
-        } else {
-            profileData.put("partner", createPartnerByProfile(profile));
-        }
+        profileData.put("partner", createPartnerByProfile(profile));
 
         return profileData;
     }
 
     private Map<String, Object> createPartnerByProfile(Profile profile) {
-        Partner partner = partnerRepo.save(
-                Partner.builder()
-                        .profile(profile)
-                        .district("N/A")
-                        .province("N/A")
-                        .street("N/A")
-                        .ward("N/A")
-                        .build()
-        );
-
-        return buildPartnerResponse(partner);
-    }
-
-    private Map<String, Object> createDesignerByProfile(Profile profile) {
         Designer designer = designerRepo.save(
                 Designer.builder()
                         .profile(profile)
-                        .bio("N/A")
-                        .shortPreview("N/A")
+                        .outsidePreview("N/A")
+                        .insidePreview("N/A")
+                        .startTime(null)
+                        .endTime(null)
                         .rating(0)
                         .build()
         );
 
-        return buildDesignerResponse(designer);
+        return buildPartnerResponse(designer);
+    }
+
+    private Map<String, Object> buildPartnerResponse(Designer designer) {
+        Map<String, Object> partnerData = new HashMap<>();
+        partnerData.put("id", designer.getId());
+        partnerData.put("outsidePreview", designer.getOutsidePreview());
+        partnerData.put("insidePreview", designer.getInsidePreview());
+        partnerData.put("startTime", designer.getStartTime());
+        partnerData.put("endTime", designer.getEndTime());
+        partnerData.put("rating", designer.getRating());
+        return partnerData;
     }
 
     @Override
@@ -298,12 +301,8 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         Map<String, Object> profileData = buildProfileResponse(profile);
-        if (profile.getDesigner() != null && profile.getPartner() == null) {
-            profileData.put("designer", buildDesignerResponse(profile.getDesigner()));
-        }
-
-        if (profile.getDesigner() == null && profile.getPartner() != null) {
-            profileData.put("partner", buildPartnerResponse(profile.getPartner()));
+        if (profile.getDesigner() != null) {
+            profileData.put("profile", buildDesignerResponse(profile.getDesigner()));
         }
 
         return profileData;
@@ -322,12 +321,12 @@ public class ProfileServiceImpl implements ProfileService {
     private Map<String, Object> buildDesignerResponse(Designer designer) {
         Map<String, Object> designerData = new HashMap<>();
         designerData.put("id", designer.getId());
-        designerData.put("bio", designer.getBio());
         designerData.put("rating", designer.getRating());
         designerData.put("thumbnail", buildThumbnailResponse(designer.getThumbnailImages()));
         designerData.put("startTime", designer.getStartTime());
         designerData.put("endTime", designer.getEndTime());
-        designerData.put("shortPreview", designer.getShortPreview());
+        designerData.put("outsidePreview", designer.getOutsidePreview());
+        designerData.put("insidePreview", designer.getInsidePreview());
         return designerData;
     }
 
@@ -341,16 +340,6 @@ public class ProfileServiceImpl implements ProfileService {
                     return data;
                 })
                 .toList();
-    }
-
-    private Map<String, Object> buildPartnerResponse(Partner partner) {
-        Map<String, Object> partnerData = new HashMap<>();
-        partnerData.put("id", partner.getId());
-        partnerData.put("street", partner.getStreet());
-        partnerData.put("ward", partner.getWard());
-        partnerData.put("district", partner.getDistrict());
-        partnerData.put("province", partner.getProvince());
-        return partnerData;
     }
 
     @Override
@@ -482,9 +471,9 @@ public class ProfileServiceImpl implements ProfileService {
         data.put("name", designer.getProfile().getName());
         data.put("phone", designer.getProfile().getPhone());
         data.put("avatar", designer.getProfile().getAvatar());
-        data.put("shortPreview", designer.getShortPreview());
+        data.put("outsidePreview", designer.getOutsidePreview());
+        data.put("insidePreview", designer.getInsidePreview());
         data.put("thumbnail", buildThumbnailResponse(designer.getThumbnailImages()));
-        data.put("bio", designer.getBio());
         data.put("rating", designer.getRating());
         return data;
     }
@@ -502,7 +491,6 @@ public class ProfileServiceImpl implements ProfileService {
                 })
                 .toList();
     }
-
 
     @Override
     @Transactional

@@ -21,9 +21,13 @@ public class UpdateDesignerProfileRequest {
 
 //    String thumbnail;
 
+    String address;
+
     String bio;
 
-    String shortProfile;
+    String outsidePreview;
+
+    String insidePreview;
 
     String name;
 
