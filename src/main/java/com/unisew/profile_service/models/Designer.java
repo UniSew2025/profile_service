@@ -26,16 +26,24 @@ public class Designer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "`short_preview`")
-    String shortPreview;
+    @Column(name = "`outside_preview`")
+    String outsidePreview;
+
+    @Column(name = "`inside_preview`")
+    String insidePreview;
 
     String bio;
 
+    @Column(name = "`start_time`")
     LocalTime startTime;
 
+    @Column(name = "`end_time`")
     LocalTime endTime;
 
     int rating;
+
+    @Column(name = "`busy`")
+    boolean isBusy;
 
     @OneToOne
     @JoinColumn(name = "`profile_id`")

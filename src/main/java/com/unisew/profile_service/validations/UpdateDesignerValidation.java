@@ -19,9 +19,6 @@ public class UpdateDesignerValidation {
         if (request.getBio() == null || request.getBio().isEmpty()) {
             errors.append("Bio cannot be empty. ");
         }
-        if (request.getShortProfile() == null || request.getShortProfile().isEmpty()) {
-            errors.append("Short profile cannot be empty. ");
-        }
 
         return errors.toString();
     }

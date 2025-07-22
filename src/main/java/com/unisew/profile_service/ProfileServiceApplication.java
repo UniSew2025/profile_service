@@ -52,7 +52,6 @@ public class ProfileServiceApplication {
                                 .name("Alice Nguyen")
                                 .phone("0909000001")
                                 .avatar("https://picsum.photos/seed/1/200")
-                                .isBusy(false)
                                 .build()
                 );
 
@@ -62,7 +61,6 @@ public class ProfileServiceApplication {
                                 .name("Vikor")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
-                                .isBusy(false)
                                 .build()
                 );
 
@@ -72,7 +70,6 @@ public class ProfileServiceApplication {
                                 .name("Ken")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
-                                .isBusy(false)
                                 .build()
                 );
 
@@ -82,14 +79,12 @@ public class ProfileServiceApplication {
                                 .name("Garment TQH")
                                 .phone("0911094322")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
-                                .isBusy(false)
                                 .build()
                 );
 
-                //designer
+                //partner
                 Designer designer1 = designerRepo.save(
                         Designer.builder()
-                                .shortPreview("Creative uniform designer")
                                 .bio("Experienced in logo & uniform for schools.")
                                 .startTime(LocalTime.of(6, 0))
                                 .endTime(LocalTime.of(18, 0))
@@ -115,18 +110,6 @@ public class ProfileServiceApplication {
                     thumbnails.add(thumb);
                 }
                 thumbnailImageRepo.saveAll(thumbnails);
-
-
-                //partner
-                Partner partner1 = partnerRepo.save(
-                        Partner.builder()
-                                .street("20 Vinh Vien")
-                                .ward("Ward 9")
-                                .district("District 10")
-                                .province("Ho Chi Minh City")
-                                .profile(profile4)
-                                .build()
-                );
 
                 // 2. Tạo services
                 Services service1 = serviceRepo.save(

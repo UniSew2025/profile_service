@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +19,10 @@ public class UpdateGarmentProfileRequest {
     int accountId;
     String name;
     String phone;
-    String street;
-    String ward;
-    String district;
-    String province;
+    String address;
+    String outsidePreview;
+    String insidePreview;
+    String bio;
+    LocalTime startTime;
+    LocalTime endTime;
 }
