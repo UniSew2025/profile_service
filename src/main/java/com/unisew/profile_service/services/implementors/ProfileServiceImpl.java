@@ -1,5 +1,6 @@
 package com.unisew.profile_service.services.implementors;
 
+import com.unisew.profile_service.enums.Role;
 import com.unisew.profile_service.enums.Status;
 import com.unisew.profile_service.models.Customer;
 import com.unisew.profile_service.models.Partner;
@@ -259,8 +260,9 @@ public class ProfileServiceImpl implements ProfileService {
         );
 
         Map<String, Object> profileData = buildProfileResponse(customer);
-        profileData.put("partner", createPartnerByProfile(customer));
-
+        if (!request.getRole().equalsIgnoreCase(Role.SCHOOL.getValue())) {
+            profileData.put("partner", createPartnerByProfile(customer));
+        }
         return profileData;
     }
 
@@ -403,14 +405,14 @@ public class ProfileServiceImpl implements ProfileService {
     public ResponseEntity<ResponseObject> getAllPackages(int designerId) {
 
         List<Package> packages = packageRepo.findAllByPartner_Id(designerId);
-         if (packages.isEmpty()) {
+        if (packages.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     ResponseObject.builder()
                             .message("No packages found for this designer")
                             .data(new ArrayList<>())
                             .build()
             );
-         }
+        }
         System.out.println("Packages found: " + packages.size());
         List<Map<String, Object>> data = packages.stream()
                 .map(this::buildPackage)
