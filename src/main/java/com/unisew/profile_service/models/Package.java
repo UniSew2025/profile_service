@@ -10,18 +10,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -38,13 +33,15 @@ public class Package {
 
     String name;
 
-    @Column(name = "`headerContent`")
+    String note;
+
+    @Column(name = "`header_content`")
     String headerContent;
 
-    @Column(name = "`deliveryDuration`")
+    @Column(name = "`delivery_duration`")
     int deliveryDuration;
 
-    @Column(name = "`revisionTime`")
+    @Column(name = "`revision_time`")
     int revisionTime;
 
     long fee;
@@ -54,10 +51,10 @@ public class Package {
 
     @ManyToOne
     @JoinColumn(name = "`designer_id`")
-    Designer designer;
+    Partner partner;
 
-    @OneToMany(mappedBy = "pkg")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    List<PackageService> packageServices;
+//    @OneToMany(mappedBy = "pkg")
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    List<PackageService> packageServices;
 }

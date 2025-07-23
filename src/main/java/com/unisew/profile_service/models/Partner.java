@@ -1,18 +1,17 @@
 package com.unisew.profile_service.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,15 +26,34 @@ public class Partner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    String street;
+    @Column(name = "`outside_preview`")
+    String outsidePreview;
 
-    String ward;
+    @Column(name = "`inside_preview`")
+    String insidePreview;
 
-    String district;
+    @Column(name = "`start_time`")
+    LocalTime startTime;
 
-    String province;
+    @Column(name = "`end_time`")
+    LocalTime endTime;
+
+    int rating;
+
+    @Column(name = "`is_busy`")
+    boolean busy;
 
     @OneToOne
-    @JoinColumn(name = "`profile_id`")
-    Profile profile;
+    @JoinColumn(name = "`customer_id`")
+    Customer customer;
+
+    @OneToMany(mappedBy = "partner")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    List<Package> packages;
+
+    @OneToMany(mappedBy = "partner")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    List<ThumbnailImage> thumbnailImages;
 }

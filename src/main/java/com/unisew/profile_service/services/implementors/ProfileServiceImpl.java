@@ -1,17 +1,19 @@
 package com.unisew.profile_service.services.implementors;
 
 import com.unisew.profile_service.enums.Status;
-import com.unisew.profile_service.models.*;
+import com.unisew.profile_service.models.Customer;
+import com.unisew.profile_service.models.Partner;
 import com.unisew.profile_service.models.Package;
-import com.unisew.profile_service.repositories.*;
+import com.unisew.profile_service.models.ThumbnailImage;
+import com.unisew.profile_service.repositories.PartnerRepo;
+import com.unisew.profile_service.repositories.PackageRepo;
+import com.unisew.profile_service.repositories.CustomerRepo;
 import com.unisew.profile_service.requests.CreatePackageRequest;
 import com.unisew.profile_service.requests.CreateProfileRequest;
-import com.unisew.profile_service.requests.CreateServiceRequest;
+import com.unisew.profile_service.requests.UpdateDesignerProfileRequest;
 import com.unisew.profile_service.requests.UpdateGarmentProfileRequest;
 import com.unisew.profile_service.requests.UpdatePackageRequest;
-import com.unisew.profile_service.requests.UpdateDesignerProfileRequest;
 import com.unisew.profile_service.requests.UpdateSchoolProfileRequest;
-import com.unisew.profile_service.requests.UpdateServiceRequest;
 import com.unisew.profile_service.responses.ResponseObject;
 import com.unisew.profile_service.services.ProfileService;
 import com.unisew.profile_service.validations.UpdateDesignerValidation;
@@ -20,14 +22,11 @@ import com.unisew.profile_service.validations.UpdateSchoolValidation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,33 +37,31 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProfileServiceImpl implements ProfileService {
 
-    DesignerRepo designerRepo;
+    PartnerRepo partnerRepo;
 
-    ProfileRepo profileRepo;
+    CustomerRepo customerRepo;
 
     PackageRepo packageRepo;
 
-    ServiceRepo serviceRepo;
-
-    PackageServiceRepo packageServiceRepo;
-
-    PartnerRepo partnerRepo;
+//    ServiceRepo serviceRepo;
+//
+//    PackageServiceRepo packageServiceRepo;
 
     // --------------------------------------------Designer Profile--------------------------------------------
     @Override
     public ResponseEntity<ResponseObject> getAllDesignerProfile() {
-        List<Designer> designers = designerRepo.findAll();
+        List<Partner> partners = partnerRepo.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
                         .message("Get designer profiles successfully")
-                        .data(buildDesigners(designers))
+                        .data(buildDesigners(partners))
                         .build()
         );
     }
 
 
-    private List<Map<String, Object>> buildDesigners(List<Designer> designers) {
-        return designers.stream()
+    private List<Map<String, Object>> buildDesigners(List<Partner> partners) {
+        return partners.stream()
                 .map(designer -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", designer.getId());
@@ -74,7 +71,7 @@ public class ProfileServiceImpl implements ProfileService {
                     map.put("endTime", designer.getEndTime());
                     map.put("rating", designer.getRating());
                     map.put("busy", designer.isBusy());
-                    map.put("profile", buildProfile(designer.getProfile()));
+                    map.put("profile", buildProfile(designer.getCustomer()));
                     map.put("package", buildPackage(designer.getPackages()));
                     map.put("thumbnails", buildThumbnailResponse(designer.getThumbnailImages()));
                     return map;
@@ -82,12 +79,12 @@ public class ProfileServiceImpl implements ProfileService {
                 .toList();
     }
 
-    private Map<String, Object> buildProfile(Profile profile) {
+    private Map<String, Object> buildProfile(Customer customer) {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", profile.getId());
-        map.put("name", profile.getName());
-        map.put("phone", profile.getPhone());
-        map.put("avatar", profile.getAvatar());
+        map.put("id", customer.getId());
+        map.put("name", customer.getName());
+        map.put("phone", customer.getPhone());
+        map.put("avatar", customer.getAvatar());
         return map;
     }
 
@@ -102,31 +99,31 @@ public class ProfileServiceImpl implements ProfileService {
                     map.put("revisionTime", pkg.getRevisionTime());
                     map.put("fee", pkg.getFee());
                     map.put("status", pkg.getStatus());
-                    map.put("services", buildService(pkg.getId()));
+//                    map.put("services", buildService(pkg.getId()));
                     return map;
                 })
                 .toList();
     }
 
-    private List<Map<String, Object>> buildService(int pkgId) {
-        List<Services> services = serviceRepo.findAllByPackageServices_Pkg_Id(pkgId);
-        return services.stream()
-                .map(sv -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", sv.getId());
-                    map.put("rule", sv.getRule());
-                    map.put("creation_date", sv.getCreationDate());
-                    map.put("status", sv.getStatus());
-                    return map;
-                })
-                .toList();
-    }
+//    private List<Map<String, Object>> buildService(int pkgId) {
+//        List<Services> services = serviceRepo.findAllByPackageServices_Pkg_Id(pkgId);
+//        return services.stream()
+//                .map(sv -> {
+//                    Map<String, Object> map = new HashMap<>();
+//                    map.put("id", sv.getId());
+//                    map.put("rule", sv.getRule());
+//                    map.put("creation_date", sv.getCreationDate());
+//                    map.put("status", sv.getStatus());
+//                    return map;
+//                })
+//                .toList();
+//    }
 
     //--------------------------------------------Garment Profile--------------------------------------------
 
     @Override
     public ResponseEntity<ResponseObject> getAllGarmentProfile() {
-        List<Designer> partners = designerRepo.findAll();
+        List<Partner> partners = partnerRepo.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseObject.builder()
                         .message("Get garment profiles successfully")
@@ -135,8 +132,8 @@ public class ProfileServiceImpl implements ProfileService {
         );
     }
 
-    private List<Map<String, Object>> buildGarments(List<Designer> designers) {
-        return designers.stream()
+    private List<Map<String, Object>> buildGarments(List<Partner> partners) {
+        return partners.stream()
                 .map(designer -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", designer.getId());
@@ -146,7 +143,7 @@ public class ProfileServiceImpl implements ProfileService {
                     map.put("endTime", designer.getEndTime());
                     map.put("rating", designer.getRating());
                     map.put("busy", designer.isBusy());
-                    map.put("profile", buildProfile(designer.getProfile()));
+                    map.put("profile", buildProfile(designer.getCustomer()));
                     return map;
                 })
                 .toList();
@@ -161,29 +158,29 @@ public class ProfileServiceImpl implements ProfileService {
                     .body(ResponseObject.builder().message(error).build());
         }
 
-        Profile profile = profileRepo.findByAccountId(request.getAccountId()).orElse(null);
-        if (profile == null) {
+        Customer customer = customerRepo.findByAccountId(request.getAccountId()).orElse(null);
+        if (customer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Profile not found for this account").build());
         }
-        profile.setName(request.getName());
-        profile.setPhone(request.getPhone());
-        profile.setAddress(request.getAddress());
+        customer.setName(request.getName());
+        customer.setPhone(request.getPhone());
+        customer.setAddress(request.getAddress());
 
-        Designer designer = profile.getDesigner();
-        if (designer == null) {
+        Partner partner = customer.getPartner();
+        if (partner == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Designer not found for this account").build());
         }
         List<ThumbnailImage> thumbnailImages = new ArrayList<>();
-        designer.setStartTime(request.getStartDate());
-        designer.setEndTime(request.getEndDate());
-        designer.setThumbnailImages(thumbnailImages);
-        designer.setOutsidePreview(request.getOutsidePreview());
-        designer.setInsidePreview(request.getInsidePreview());
+        partner.setStartTime(request.getStartDate());
+        partner.setEndTime(request.getEndDate());
+        partner.setThumbnailImages(thumbnailImages);
+        partner.setOutsidePreview(request.getOutsidePreview());
+        partner.setInsidePreview(request.getInsidePreview());
 
-        profileRepo.save(profile);
-        designerRepo.save(designer);
+        customerRepo.save(customer);
+        partnerRepo.save(partner);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseObject.builder()
@@ -199,14 +196,14 @@ public class ProfileServiceImpl implements ProfileService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseObject.builder().message(error).build());
         }
-        Profile profile = profileRepo.findByAccountId(request.getAccountId()).orElse(null);
-        if (profile == null) {
+        Customer customer = customerRepo.findByAccountId(request.getAccountId()).orElse(null);
+        if (customer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Profile not found for this account").build());
         }
-        profile.setName(request.getName());
-        profile.setPhone(request.getPhone());
-        profileRepo.save(profile);
+        customer.setName(request.getName());
+        customer.setPhone(request.getPhone());
+        customerRepo.save(customer);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseObject.builder()
                         .message("Update profile successfully")
@@ -221,25 +218,25 @@ public class ProfileServiceImpl implements ProfileService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ResponseObject.builder().message(error).build());
         }
-        Profile profile = profileRepo.findByAccountId(request.getAccountId()).orElse(null);
-        if (profile == null) {
+        Customer customer = customerRepo.findByAccountId(request.getAccountId()).orElse(null);
+        if (customer == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Profile not found for this account").build());
         }
-        profile.setName(request.getName());
-        profile.setPhone(request.getPhone());
-        profile.setAddress(request.getAddress());
-        Designer designer = profile.getDesigner();
-        if (designer == null) {
+        customer.setName(request.getName());
+        customer.setPhone(request.getPhone());
+        customer.setAddress(request.getAddress());
+        Partner partner = customer.getPartner();
+        if (partner == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Partner not found for this account").build());
         }
-        designer.setInsidePreview(request.getInsidePreview());
-        designer.setOutsidePreview(request.getOutsidePreview());
-        designer.setStartTime(request.getStartTime());
-        designer.setEndTime(request.getEndTime());
-        designer.setProfile(profile);
-        profileRepo.save(profile);
+        partner.setInsidePreview(request.getInsidePreview());
+        partner.setOutsidePreview(request.getOutsidePreview());
+        partner.setStartTime(request.getStartTime());
+        partner.setEndTime(request.getEndTime());
+        partner.setCustomer(customer);
+        customerRepo.save(customer);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseObject.builder()
                         .message("Update profile successfully")
@@ -251,8 +248,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public Map<String, Object> createProfile(CreateProfileRequest request) {
-        Profile profile = profileRepo.save(
-                Profile.builder()
+        Customer customer = customerRepo.save(
+                Customer.builder()
                         .accountId(request.getAccountId())
                         .avatar(request.getAvatar())
                         .name(request.getName())
@@ -261,16 +258,16 @@ public class ProfileServiceImpl implements ProfileService {
                         .build()
         );
 
-        Map<String, Object> profileData = buildProfileResponse(profile);
-        profileData.put("partner", createPartnerByProfile(profile));
+        Map<String, Object> profileData = buildProfileResponse(customer);
+        profileData.put("partner", createPartnerByProfile(customer));
 
         return profileData;
     }
 
-    private Map<String, Object> createPartnerByProfile(Profile profile) {
-        Designer designer = designerRepo.save(
-                Designer.builder()
-                        .profile(profile)
+    private Map<String, Object> createPartnerByProfile(Customer customer) {
+        Partner partner = partnerRepo.save(
+                Partner.builder()
+                        .customer(customer)
                         .outsidePreview("N/A")
                         .insidePreview("N/A")
                         .startTime(null)
@@ -279,54 +276,54 @@ public class ProfileServiceImpl implements ProfileService {
                         .build()
         );
 
-        return buildPartnerResponse(designer);
+        return buildPartnerResponse(partner);
     }
 
-    private Map<String, Object> buildPartnerResponse(Designer designer) {
+    private Map<String, Object> buildPartnerResponse(Partner partner) {
         Map<String, Object> partnerData = new HashMap<>();
-        partnerData.put("id", designer.getId());
-        partnerData.put("outsidePreview", designer.getOutsidePreview());
-        partnerData.put("insidePreview", designer.getInsidePreview());
-        partnerData.put("startTime", designer.getStartTime());
-        partnerData.put("endTime", designer.getEndTime());
-        partnerData.put("rating", designer.getRating());
+        partnerData.put("id", partner.getId());
+        partnerData.put("outsidePreview", partner.getOutsidePreview());
+        partnerData.put("insidePreview", partner.getInsidePreview());
+        partnerData.put("startTime", partner.getStartTime());
+        partnerData.put("endTime", partner.getEndTime());
+        partnerData.put("rating", partner.getRating());
         return partnerData;
     }
 
     @Override
     public Map<String, Object> getProfileInfo(int accountId) {
-        Profile profile = profileRepo.findByAccountId(accountId).orElse(null);
-        if (profile == null) {
+        Customer customer = customerRepo.findByAccountId(accountId).orElse(null);
+        if (customer == null) {
             return null;
         }
 
-        Map<String, Object> profileData = buildProfileResponse(profile);
-        if (profile.getDesigner() != null) {
-            profileData.put("profile", buildDesignerResponse(profile.getDesigner()));
+        Map<String, Object> profileData = buildProfileResponse(customer);
+        if (customer.getPartner() != null) {
+            profileData.put("profile", buildDesignerResponse(customer.getPartner()));
         }
 
         return profileData;
     }
 
-    private Map<String, Object> buildProfileResponse(Profile profile) {
+    private Map<String, Object> buildProfileResponse(Customer customer) {
         Map<String, Object> profileData = new HashMap<>();
-        profileData.put("id", profile.getId());
-        profileData.put("name", profile.getName());
-        profileData.put("avatar", profile.getAvatar());
-        profileData.put("phone", profile.getPhone());
+        profileData.put("id", customer.getId());
+        profileData.put("name", customer.getName());
+        profileData.put("avatar", customer.getAvatar());
+        profileData.put("phone", customer.getPhone());
 
         return profileData;
     }
 
-    private Map<String, Object> buildDesignerResponse(Designer designer) {
+    private Map<String, Object> buildDesignerResponse(Partner partner) {
         Map<String, Object> designerData = new HashMap<>();
-        designerData.put("id", designer.getId());
-        designerData.put("rating", designer.getRating());
-        designerData.put("thumbnail", buildThumbnailResponse(designer.getThumbnailImages()));
-        designerData.put("startTime", designer.getStartTime());
-        designerData.put("endTime", designer.getEndTime());
-        designerData.put("outsidePreview", designer.getOutsidePreview());
-        designerData.put("insidePreview", designer.getInsidePreview());
+        designerData.put("id", partner.getId());
+        designerData.put("rating", partner.getRating());
+        designerData.put("thumbnail", buildThumbnailResponse(partner.getThumbnailImages()));
+        designerData.put("startTime", partner.getStartTime());
+        designerData.put("endTime", partner.getEndTime());
+        designerData.put("outsidePreview", partner.getOutsidePreview());
+        designerData.put("insidePreview", partner.getInsidePreview());
         return designerData;
     }
 
@@ -352,70 +349,70 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     //---------------------------------------------Service--------------------------------------------
-    @Override
-    public ResponseEntity<ResponseObject> getAllService() {
-        List<Services> services = serviceRepo.findAll();
-        List<Map<String, Object>> result = services.stream()
-                .map(service -> {
-                    Map<String, Object> serviceData = new HashMap<>();
-                    serviceData.put("id", service.getId());
-                    serviceData.put("rule", service.getRule());
-                    serviceData.put("creationDate", service.getCreationDate());
-                    serviceData.put("status", service.getStatus());
-                    return serviceData;
-                })
-                .toList();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseObject.builder()
-                        .message("Get all services successfully")
-                        .data(result)
-                        .build());
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<ResponseObject> createService(CreateServiceRequest request) {
-        Services service = Services.builder()
-                .rule(request.getRule())
-                .creationDate(LocalDate.now())
-                .status(Status.SERVICE_ACTIVE)
-                .build();
-
-        serviceRepo.save(service);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ResponseObject.builder()
-                        .message("Create service successfully")
-                        .build());
-    }
-
-    @Override
-    @Transactional
-    public ResponseEntity<ResponseObject> updateService(UpdateServiceRequest request) {
-        Services service = serviceRepo.findById(request.getId()).orElse(null);
-        if (service == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ResponseObject.builder()
-                            .message("Service not found")
-                            .data(null)
-                            .build());
-        }
-        service.setRule(request.getRule());
-        service.setStatus(Status.valueOf(request.getStatus()));
-        serviceRepo.save(service);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseObject.builder()
-                        .message("Update service successfully")
-                        .build());
-    }
+//    @Override
+//    public ResponseEntity<ResponseObject> getAllService() {
+//        List<Services> services = serviceRepo.findAll();
+//        List<Map<String, Object>> result = services.stream()
+//                .map(service -> {
+//                    Map<String, Object> serviceData = new HashMap<>();
+//                    serviceData.put("id", service.getId());
+//                    serviceData.put("rule", service.getRule());
+//                    serviceData.put("creationDate", service.getCreationDate());
+//                    serviceData.put("status", service.getStatus());
+//                    return serviceData;
+//                })
+//                .toList();
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(ResponseObject.builder()
+//                        .message("Get all services successfully")
+//                        .data(result)
+//                        .build());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public ResponseEntity<ResponseObject> createService(CreateServiceRequest request) {
+//        Services service = Services.builder()
+//                .rule(request.getRule())
+//                .creationDate(LocalDate.now())
+//                .status(Status.SERVICE_ACTIVE)
+//                .build();
+//
+//        serviceRepo.save(service);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED)
+//                .body(ResponseObject.builder()
+//                        .message("Create service successfully")
+//                        .build());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public ResponseEntity<ResponseObject> updateService(UpdateServiceRequest request) {
+//        Services service = serviceRepo.findById(request.getId()).orElse(null);
+//        if (service == null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(ResponseObject.builder()
+//                            .message("Service not found")
+//                            .data(null)
+//                            .build());
+//        }
+//        service.setRule(request.getRule());
+//        service.setStatus(Status.valueOf(request.getStatus()));
+//        serviceRepo.save(service);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(ResponseObject.builder()
+//                        .message("Update service successfully")
+//                        .build());
+//    }
 
     //---------------------------------------------Package--------------------------------------------
     @Override
     public ResponseEntity<ResponseObject> getAllPackages(int designerId) {
 
-        List<Package> packages = packageRepo.findAllByDesigner_Id(designerId);
+        List<Package> packages = packageRepo.findAllByPartner_Id(designerId);
          if (packages.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     ResponseObject.builder()
@@ -460,42 +457,42 @@ public class ProfileServiceImpl implements ProfileService {
         data.put("revisionTime", pkg.getRevisionTime());
         data.put("fee", pkg.getFee());
         data.put("status", pkg.getStatus());
-        data.put("designerInfo", buildDesigner(pkg.getDesigner()));
-        data.put("services", buildServices(pkg.getPackageServices()));
+        data.put("designerInfo", buildDesigner(pkg.getPartner()));
+//        data.put("services", buildServices(pkg.getPackageServices()));
         return data;
     }
 
-    private Map<String, Object> buildDesigner(Designer designer) {
+    private Map<String, Object> buildDesigner(Partner partner) {
         Map<String, Object> data = new HashMap<>();
-        data.put("id", designer.getId());
-        data.put("name", designer.getProfile().getName());
-        data.put("phone", designer.getProfile().getPhone());
-        data.put("avatar", designer.getProfile().getAvatar());
-        data.put("outsidePreview", designer.getOutsidePreview());
-        data.put("insidePreview", designer.getInsidePreview());
-        data.put("thumbnail", buildThumbnailResponse(designer.getThumbnailImages()));
-        data.put("rating", designer.getRating());
+        data.put("id", partner.getId());
+        data.put("name", partner.getCustomer().getName());
+        data.put("phone", partner.getCustomer().getPhone());
+        data.put("avatar", partner.getCustomer().getAvatar());
+        data.put("outsidePreview", partner.getOutsidePreview());
+        data.put("insidePreview", partner.getInsidePreview());
+        data.put("thumbnail", buildThumbnailResponse(partner.getThumbnailImages()));
+        data.put("rating", partner.getRating());
         return data;
     }
 
-    private List<Map<String, Object>> buildServices(List<PackageService> pkgServices) {
-        return pkgServices.stream()
-                .map(packageService -> {
-                    Services service = packageService.getService();
-                    Map<String, Object> serviceData = new HashMap<>();
-                    serviceData.put("id", service.getId());
-                    serviceData.put("rule", service.getRule());
-                    serviceData.put("creationDate", service.getCreationDate());
-                    serviceData.put("status", service.getStatus());
-                    return serviceData;
-                })
-                .toList();
-    }
+//    private List<Map<String, Object>> buildServices(List<PackageService> pkgServices) {
+//        return pkgServices.stream()
+//                .map(packageService -> {
+//                    Services service = packageService.getService();
+//                    Map<String, Object> serviceData = new HashMap<>();
+//                    serviceData.put("id", service.getId());
+//                    serviceData.put("rule", service.getRule());
+//                    serviceData.put("creationDate", service.getCreationDate());
+//                    serviceData.put("status", service.getStatus());
+//                    return serviceData;
+//                })
+//                .toList();
+//    }
 
     @Override
     @Transactional
     public ResponseEntity<ResponseObject> createPackage(CreatePackageRequest request) {
-        Designer designer = designerRepo.findById(request.getDesignerId())
+        Partner partner = partnerRepo.findById(request.getDesignerId())
                 .orElseThrow(() -> new RuntimeException("Designer not found"));
 
         Package pkg = Package.builder()
@@ -505,24 +502,24 @@ public class ProfileServiceImpl implements ProfileService {
                 .revisionTime(request.getRevisionTime())
                 .fee(request.getFee())
                 .status(Status.PACKAGE_ACTIVE)
-                .designer(designer)
+                .partner(partner)
                 .build();
 
         Package savedPkg = packageRepo.save(pkg);
 
-        List<PackageService> packageServices = request.getServiceIds().stream()
-                .map(serviceId -> {
-                    Services service = serviceRepo.findById(serviceId).orElse(null);
-                    return PackageService.builder()
-                            .id(new PackageService.ID(savedPkg.getId(), serviceId))
-                            .pkg(savedPkg)
-                            .service(service)
-                            .build();
-                })
-                .toList();
-
-        packageServiceRepo.saveAll(packageServices);
-        pkg.setPackageServices(packageServices);
+//        List<PackageService> packageServices = request.getServiceIds().stream()
+//                .map(serviceId -> {
+//                    Services service = serviceRepo.findById(serviceId).orElse(null);
+//                    return PackageService.builder()
+//                            .id(new PackageService.ID(savedPkg.getId(), serviceId))
+//                            .pkg(savedPkg)
+//                            .service(service)
+//                            .build();
+//                })
+//                .toList();
+//
+//        packageServiceRepo.saveAll(packageServices);
+//        pkg.setPackageServices(packageServices);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseObject.builder()
@@ -546,26 +543,26 @@ public class ProfileServiceImpl implements ProfileService {
         pkg.setRevisionTime(request.getRevisionTime());
         pkg.setFee(request.getFee());
 
-        if (request.getDesignerId() != null && !request.getDesignerId().equals(pkg.getDesigner().getId())) {
-            Designer designer = designerRepo.findById(request.getDesignerId()).orElse(null);
-            pkg.setDesigner(designer);
+        if (request.getDesignerId() != null && !request.getDesignerId().equals(pkg.getPartner().getId())) {
+            Partner partner = partnerRepo.findById(request.getDesignerId()).orElse(null);
+            pkg.setPartner(partner);
         }
 
-        packageServiceRepo.deleteAll(pkg.getPackageServices());
+//        packageServiceRepo.deleteAll(pkg.getPackageServices());
 
-        List<PackageService> newPackageServices = request.getServiceIds().stream()
-                .map(serviceId -> {
-                    Services service = serviceRepo.findById(serviceId).orElse(null);
-                    return PackageService.builder()
-                            .id(new PackageService.ID(pkg.getId(), serviceId))
-                            .pkg(pkg)
-                            .service(service)
-                            .build();
-                })
-                .toList();
-
-        packageServiceRepo.saveAll(newPackageServices);
-        pkg.setPackageServices(new ArrayList<>(newPackageServices));
+//        List<PackageService> newPackageServices = request.getServiceIds().stream()
+//                .map(serviceId -> {
+//                    Services service = serviceRepo.findById(serviceId).orElse(null);
+//                    return PackageService.builder()
+//                            .id(new PackageService.ID(pkg.getId(), serviceId))
+//                            .pkg(pkg)
+//                            .service(service)
+//                            .build();
+//                })
+//                .toList();
+//
+//        packageServiceRepo.saveAll(newPackageServices);
+//        pkg.setPackageServices(new ArrayList<>(newPackageServices));
         packageRepo.save(pkg);
 
         return ResponseEntity.status(HttpStatus.OK)
