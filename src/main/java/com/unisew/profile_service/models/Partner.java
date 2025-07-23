@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`designer`")
+@Table(name = "`partner`")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Partner {
 
