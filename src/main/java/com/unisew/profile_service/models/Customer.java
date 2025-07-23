@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`profile`")
+@Table(name = "`customer`")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Customer {
 
@@ -24,7 +24,7 @@ public class Customer {
     int id;
 
     @Column(name = "`account_id`")
-    int accountId;
+    Integer accountId;
 
     String name;
 
