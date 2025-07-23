@@ -1,25 +1,20 @@
 package com.unisew.profile_service;
 
 import com.unisew.profile_service.enums.Status;
-import com.unisew.profile_service.models.Designer;
+import com.unisew.profile_service.models.Customer;
 import com.unisew.profile_service.models.Partner;
-import com.unisew.profile_service.models.Profile;
-import com.unisew.profile_service.models.Services;
 import com.unisew.profile_service.models.Package;
-import com.unisew.profile_service.models.PackageService;
 import com.unisew.profile_service.models.ThumbnailImage;
-import com.unisew.profile_service.repositories.*;
-import lombok.Builder;
+import com.unisew.profile_service.repositories.PartnerRepo;
+import com.unisew.profile_service.repositories.PackageRepo;
+import com.unisew.profile_service.repositories.CustomerRepo;
+import com.unisew.profile_service.repositories.ThumbnailImageRepo;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.repository.query.parser.Part;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +23,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProfileServiceApplication {
 
-    private final ProfileRepo profileRepo;
+    private final CustomerRepo customerRepo;
     private final PartnerRepo partnerRepo;
-    private final DesignerRepo designerRepo;
     private final PackageRepo packageRepo;
-    private final ServiceRepo serviceRepo;
-    private final PackageServiceRepo packageServiceRepo;
+//    private final ServiceRepo serviceRepo;
+//    private final PackageServiceRepo packageServiceRepo;
     private final ThumbnailImageRepo thumbnailImageRepo;
 
     public static void main(String[] args) {
@@ -46,8 +40,8 @@ public class ProfileServiceApplication {
             @Override
             public void run(String... args) throws Exception {
                 // 1. Tạo profile
-                Profile profile1 = profileRepo.save(
-                        Profile.builder()
+                Customer customer1 = customerRepo.save(
+                        Customer.builder()
                                 .accountId(1)
                                 .name("Alice Nguyen")
                                 .phone("0909000001")
@@ -55,8 +49,8 @@ public class ProfileServiceApplication {
                                 .build()
                 );
 
-                Profile profile2 = profileRepo.save(
-                        Profile.builder()
+                Customer customer2 = customerRepo.save(
+                        Customer.builder()
                                 .accountId(2)
                                 .name("Vikor")
                                 .phone("0911094322")
@@ -64,8 +58,8 @@ public class ProfileServiceApplication {
                                 .build()
                 );
 
-                Profile profile3 = profileRepo.save(
-                        Profile.builder()
+                Customer customer3 = customerRepo.save(
+                        Customer.builder()
                                 .accountId(3)
                                 .name("Ken")
                                 .phone("0911094322")
@@ -73,8 +67,8 @@ public class ProfileServiceApplication {
                                 .build()
                 );
 
-                Profile profile4 = profileRepo.save(
-                        Profile.builder()
+                Customer customer4 = customerRepo.save(
+                        Customer.builder()
                                 .accountId(4)
                                 .name("Garment TQH")
                                 .phone("0911094322")
@@ -83,13 +77,12 @@ public class ProfileServiceApplication {
                 );
 
                 //partner
-                Designer designer1 = designerRepo.save(
-                        Designer.builder()
-                                .bio("Experienced in logo & uniform for schools.")
+                Partner partner1 = partnerRepo.save(
+                        Partner.builder()
                                 .startTime(LocalTime.of(6, 0))
                                 .endTime(LocalTime.of(18, 0))
                                 .rating(4)
-                                .profile(profile3)
+                                .customer(customer3)
                                 .build()
                 );
 
@@ -104,28 +97,28 @@ public class ProfileServiceApplication {
                 for (String url : thumbnailUrls1) {
                     ThumbnailImage thumb = ThumbnailImage.builder()
                             .imageUrl(url)
-                            .name("Thumbnail for " + designer1.getProfile().getName())
-                            .designer(designer1)
+                            .name("Thumbnail for " + partner1.getCustomer().getName())
+                            .partner(partner1)
                             .build();
                     thumbnails.add(thumb);
                 }
                 thumbnailImageRepo.saveAll(thumbnails);
 
                 // 2. Tạo services
-                Services service1 = serviceRepo.save(
-                        Services.builder()
-                                .rule("Logo vector design")
-                                .creationDate(LocalDate.now())
-                                .status(Status.ACCOUNT_ACTIVE)
-                                .build()
-                );
-                Services service2 = serviceRepo.save(
-                        Services.builder()
-                                .rule("Uniform color consultation")
-                                .creationDate(LocalDate.now())
-                                .status(Status.ACCOUNT_ACTIVE)
-                                .build()
-                );
+//                Services service1 = serviceRepo.save(
+//                        Services.builder()
+//                                .rule("Logo vector design")
+//                                .creationDate(LocalDate.now())
+//                                .status(Status.ACCOUNT_ACTIVE)
+//                                .build()
+//                );
+//                Services service2 = serviceRepo.save(
+//                        Services.builder()
+//                                .rule("Uniform color consultation")
+//                                .creationDate(LocalDate.now())
+//                                .status(Status.ACCOUNT_ACTIVE)
+//                                .build()
+//                );
 
                 // 3. Tạo package
                 Package pkg1 = packageRepo.save(
@@ -136,7 +129,7 @@ public class ProfileServiceApplication {
                                 .revisionTime(2)
                                 .fee(1000000)
                                 .status(Status.ACCOUNT_ACTIVE)
-                                .designer(designer1)
+                                .partner(partner1)
                                 .build()
                 );
                 Package pkg2 = packageRepo.save(
@@ -147,7 +140,7 @@ public class ProfileServiceApplication {
                                 .revisionTime(3)
                                 .fee(1500000)
                                 .status(Status.ACCOUNT_ACTIVE)
-                                .designer(designer1)
+                                .partner(partner1)
                                 .build()
                 );
 
@@ -159,49 +152,49 @@ public class ProfileServiceApplication {
                                 .revisionTime(5)
                                 .fee(2500000)
                                 .status(Status.ACCOUNT_ACTIVE)
-                                .designer(designer1)
+                                .partner(partner1)
                                 .build()
                 );
 
                 // 4. PackageService
-                PackageService.ID pkgServId1 = PackageService.ID.builder()
-                        .packageId(pkg1.getId())
-                        .serviceId(service1.getId())
-                        .build();
-
-                PackageService packageService1 = packageServiceRepo.save(
-                        PackageService.builder()
-                                .id(pkgServId1)
-                                .pkg(pkg1)
-                                .service(service1)
-                                .build()
-                );
-
-                PackageService.ID pkgServId2 = PackageService.ID.builder()
-                        .packageId(pkg2.getId())
-                        .serviceId(service2.getId())
-                        .build();
-
-                PackageService packageService2 = packageServiceRepo.save(
-                        PackageService.builder()
-                                .id(pkgServId2)
-                                .pkg(pkg2)
-                                .service(service2)
-                                .build()
-                );
-
-                PackageService.ID pkgServId3 = PackageService.ID.builder()
-                        .packageId(pkg2.getId())
-                        .serviceId(service2.getId())
-                        .build();
-
-                PackageService packageService3 = packageServiceRepo.save(
-                        PackageService.builder()
-                                .id(pkgServId3)
-                                .pkg(pkg2)
-                                .service(service2)
-                                .build()
-                );
+//                PackageService.ID pkgServId1 = PackageService.ID.builder()
+//                        .packageId(pkg1.getId())
+//                        .serviceId(service1.getId())
+//                        .build();
+//
+//                PackageService packageService1 = packageServiceRepo.save(
+//                        PackageService.builder()
+//                                .id(pkgServId1)
+//                                .pkg(pkg1)
+//                                .service(service1)
+//                                .build()
+//                );
+//
+//                PackageService.ID pkgServId2 = PackageService.ID.builder()
+//                        .packageId(pkg2.getId())
+//                        .serviceId(service2.getId())
+//                        .build();
+//
+//                PackageService packageService2 = packageServiceRepo.save(
+//                        PackageService.builder()
+//                                .id(pkgServId2)
+//                                .pkg(pkg2)
+//                                .service(service2)
+//                                .build()
+//                );
+//
+//                PackageService.ID pkgServId3 = PackageService.ID.builder()
+//                        .packageId(pkg2.getId())
+//                        .serviceId(service2.getId())
+//                        .build();
+//
+//                PackageService packageService3 = packageServiceRepo.save(
+//                        PackageService.builder()
+//                                .id(pkgServId3)
+//                                .pkg(pkg2)
+//                                .service(service2)
+//                                .build()
+//                );
             }
         };
     }

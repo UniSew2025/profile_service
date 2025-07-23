@@ -41,10 +41,10 @@ public interface ProfileService {
 
     ResponseEntity<ResponseObject> disablePackage(int packageId);
 
-    ResponseEntity<ResponseObject> getAllService();
-
-    ResponseEntity<ResponseObject> createService(CreateServiceRequest request);
-
-    ResponseEntity<ResponseObject> updateService(UpdateServiceRequest request);
+//    ResponseEntity<ResponseObject> getAllService();
+//
+//    ResponseEntity<ResponseObject> createService(CreateServiceRequest request);
+//
+//    ResponseEntity<ResponseObject> updateService(UpdateServiceRequest request);
 
 }

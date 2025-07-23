@@ -35,5 +35,5 @@ public class ThumbnailImage {
 
     @ManyToOne
     @JoinColumn(name = "`designer_id`")
-    Designer designer;
+    Partner partner;
 }

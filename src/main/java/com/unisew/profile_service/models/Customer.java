@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +17,7 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "`profile`")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Profile {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +34,8 @@ public class Profile {
 
     String address;
 
-    @OneToOne(mappedBy = "profile", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "customer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    Designer designer;
+    Partner partner;
 }

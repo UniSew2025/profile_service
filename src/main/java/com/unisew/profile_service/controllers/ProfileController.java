@@ -60,23 +60,23 @@ public class ProfileController {
     }
 
     //-----------------------------Service--------------------------------
-    @GetMapping("/service")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL') or hasRole('DESIGNER')" )
-    public ResponseEntity<ResponseObject> getAllService() {
-        return profileService.getAllService();
-    }
-
-    @PostMapping("/service")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseObject> createService(@RequestBody CreateServiceRequest request) {
-        return profileService.createService(request);
-    }
-
-    @PutMapping("/service")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ResponseObject> updateService(@RequestBody UpdateServiceRequest request) {
-        return profileService.updateService(request);
-    }
+//    @GetMapping("/service")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL') or hasRole('DESIGNER')" )
+//    public ResponseEntity<ResponseObject> getAllService() {
+//        return profileService.getAllService();
+//    }
+//
+//    @PostMapping("/service")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<ResponseObject> createService(@RequestBody CreateServiceRequest request) {
+//        return profileService.createService(request);
+//    }
+//
+//    @PutMapping("/service")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<ResponseObject> updateService(@RequestBody UpdateServiceRequest request) {
+//        return profileService.updateService(request);
+//    }
 
     //--------------------------------Package-----------------------------
     @GetMapping("/designer/package/{id}")
