@@ -279,17 +279,6 @@ public class ProfileServiceImpl implements ProfileService {
         return buildPartnerResponse(partner);
     }
 
-    private Map<String, Object> buildPartnerResponse(Partner partner) {
-        Map<String, Object> partnerData = new HashMap<>();
-        partnerData.put("id", partner.getId());
-        partnerData.put("outsidePreview", partner.getOutsidePreview());
-        partnerData.put("insidePreview", partner.getInsidePreview());
-        partnerData.put("startTime", partner.getStartTime());
-        partnerData.put("endTime", partner.getEndTime());
-        partnerData.put("rating", partner.getRating());
-        return partnerData;
-    }
-
     @Override
     public Map<String, Object> getProfileInfo(int accountId) {
         Customer customer = customerRepo.findByAccountId(accountId).orElse(null);
@@ -299,7 +288,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         Map<String, Object> profileData = buildProfileResponse(customer);
         if (customer.getPartner() != null) {
-            profileData.put("profile", buildDesignerResponse(customer.getPartner()));
+            profileData.put("partner", buildPartnerResponse(customer.getPartner()));
         }
 
         return profileData;
@@ -315,7 +304,7 @@ public class ProfileServiceImpl implements ProfileService {
         return profileData;
     }
 
-    private Map<String, Object> buildDesignerResponse(Partner partner) {
+    private Map<String, Object> buildPartnerResponse(Partner partner) {
         Map<String, Object> designerData = new HashMap<>();
         designerData.put("id", partner.getId());
         designerData.put("rating", partner.getRating());
@@ -324,6 +313,7 @@ public class ProfileServiceImpl implements ProfileService {
         designerData.put("endTime", partner.getEndTime());
         designerData.put("outsidePreview", partner.getOutsidePreview());
         designerData.put("insidePreview", partner.getInsidePreview());
+        designerData.put("isBusy", partner.isBusy());
         return designerData;
     }
 
