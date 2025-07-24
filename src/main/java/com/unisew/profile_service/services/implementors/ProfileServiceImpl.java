@@ -331,6 +331,7 @@ public class ProfileServiceImpl implements ProfileService {
         designerData.put("outsidePreview", partner.getOutsidePreview());
         designerData.put("insidePreview", partner.getInsidePreview());
         designerData.put("isBusy", partner.isBusy());
+        designerData.put("packages", buildPackage(partner.getPackages()));
         return designerData;
     }
 
