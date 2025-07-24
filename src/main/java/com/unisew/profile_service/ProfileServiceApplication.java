@@ -78,6 +78,15 @@ public class ProfileServiceApplication {
                                 .build()
                 );
 
+                Customer customer5 = customerRepo.save(
+                        Customer.builder()
+                                .accountId(4)
+                                .name("Garment HuyTQ")
+                                .phone("0911091234")
+                                .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
+                                .build()
+                );
+
                 //partner
                 Partner partner1 = partnerRepo.save(
                         Partner.builder()
@@ -97,6 +106,15 @@ public class ProfileServiceApplication {
                                 .build()
                 );
 
+                Partner partner3 = partnerRepo.save(
+                        Partner.builder()
+                                .startTime(LocalTime.of(6, 0))
+                                .endTime(LocalTime.of(18, 0))
+                                .rating(2)
+                                .customer(customer5)
+                                .build()
+                );
+
                 //thumbnail images
                 List<String> thumbnailUrls1 = List.of(
                         "https://www.shutterstock.com/image-vector/technical-flat-sketch-girls-school-260nw-2287745045.jpg",
@@ -112,12 +130,20 @@ public class ProfileServiceApplication {
                             .partner(partner1)
                             .build();
                     thumbnails.add(thumb);
+
                     ThumbnailImage thumb2 = ThumbnailImage.builder()
                             .imageUrl(url)
                             .name("Thumbnail for " + partner2.getCustomer().getName())
                             .partner(partner2)
                             .build();
                     thumbnails.add(thumb2);
+
+                    ThumbnailImage thumb3 = ThumbnailImage.builder()
+                            .imageUrl(url)
+                            .name("Thumbnail for " + partner3.getCustomer().getName())
+                            .partner(partner3)
+                            .build();
+                    thumbnails.add(thumb3);
                 }
                 thumbnailImageRepo.saveAll(thumbnails);
 
