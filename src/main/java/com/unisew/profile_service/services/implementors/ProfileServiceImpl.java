@@ -16,6 +16,7 @@ import com.unisew.profile_service.requests.UpdateGarmentProfileRequest;
 import com.unisew.profile_service.requests.UpdatePackageRequest;
 import com.unisew.profile_service.requests.UpdateSchoolProfileRequest;
 import com.unisew.profile_service.responses.ResponseObject;
+import com.unisew.profile_service.services.AccountService;
 import com.unisew.profile_service.services.ProfileService;
 import com.unisew.profile_service.validations.UpdateDesignerValidation;
 import com.unisew.profile_service.validations.UpdateGarmentValidation;
@@ -44,6 +45,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     PackageRepo packageRepo;
 
+    AccountService accountService;
 //    ServiceRepo serviceRepo;
 //
 //    PackageServiceRepo packageServiceRepo;
@@ -63,6 +65,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     private List<Map<String, Object>> buildDesigners(List<Partner> partners) {
         return partners.stream()
+                .filter(designer ->
+                        {
+                            Map<String, Object> map = accountService.getAccountById(designer.getCustomer().getAccountId());
+                            return map.get("role").equals(Role.DESIGNER.getValue().toLowerCase());
+                        }
+                )
                 .map(designer -> {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", designer.getId());
@@ -135,16 +143,22 @@ public class ProfileServiceImpl implements ProfileService {
 
     private List<Map<String, Object>> buildGarments(List<Partner> partners) {
         return partners.stream()
-                .map(designer -> {
+                .filter(garment ->
+                        {
+                            Map<String, Object> map = accountService.getAccountById(garment.getCustomer().getAccountId());
+                            return map.get("role").equals(Role.GARMENT_FACTORY.getValue().toLowerCase());
+                        }
+                )
+                .map(garment -> {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("id", designer.getId());
-                    map.put("outsidePreview", designer.getOutsidePreview());
-                    map.put("insidePreview", designer.getInsidePreview());
-                    map.put("startTime", designer.getStartTime());
-                    map.put("endTime", designer.getEndTime());
-                    map.put("rating", designer.getRating());
-                    map.put("busy", designer.isBusy());
-                    map.put("profile", buildProfile(designer.getCustomer()));
+                    map.put("id", garment.getId());
+                    map.put("outsidePreview", garment.getOutsidePreview());
+                    map.put("insidePreview", garment.getInsidePreview());
+                    map.put("startTime", garment.getStartTime());
+                    map.put("endTime", garment.getEndTime());
+                    map.put("rating", garment.getRating());
+                    map.put("busy", garment.isBusy());
+                    map.put("profile", buildProfile(garment.getCustomer()));
                     return map;
                 })
                 .toList();
