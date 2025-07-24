@@ -86,6 +86,15 @@ public class ProfileServiceApplication {
                                 .build()
                 );
 
+                Partner partner2 = partnerRepo.save(
+                        Partner.builder()
+                                .startTime(LocalTime.of(6, 0))
+                                .endTime(LocalTime.of(18, 0))
+                                .rating(4)
+                                .customer(customer4)
+                                .build()
+                );
+
                 //thumbnail images
                 List<String> thumbnailUrls1 = List.of(
                         "https://www.shutterstock.com/image-vector/technical-flat-sketch-girls-school-260nw-2287745045.jpg",
@@ -101,6 +110,12 @@ public class ProfileServiceApplication {
                             .partner(partner1)
                             .build();
                     thumbnails.add(thumb);
+                    ThumbnailImage thumb2 = ThumbnailImage.builder()
+                            .imageUrl(url)
+                            .name("Thumbnail for " + partner2.getCustomer().getName())
+                            .partner(partner2)
+                            .build();
+                    thumbnails.add(thumb2);
                 }
                 thumbnailImageRepo.saveAll(thumbnails);
 
