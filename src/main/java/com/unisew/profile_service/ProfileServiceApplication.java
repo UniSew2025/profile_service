@@ -80,7 +80,7 @@ public class ProfileServiceApplication {
 
                 Customer customer5 = customerRepo.save(
                         Customer.builder()
-                                .accountId(4)
+                                .accountId(5)
                                 .name("Garment HuyTQ")
                                 .phone("0911091234")
                                 .avatar("https://employer.jobsgo.vn/uploads/media/img/201803/pictures_library_hue-dinh_8457_180316171037_1078.jpg")
