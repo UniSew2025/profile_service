@@ -159,6 +159,7 @@ public class ProfileServiceImpl implements ProfileService {
                     map.put("rating", garment.getRating());
                     map.put("busy", garment.isBusy());
                     map.put("profile", buildProfile(garment.getCustomer()));
+                    map.put("thumbnails", buildThumbnailResponse(garment.getThumbnailImages()));
                     return map;
                 })
                 .toList();
