@@ -23,8 +23,6 @@ public class UpdateDesignerProfileRequest {
 
     String address;
 
-    String bio;
-
     String outsidePreview;
 
     String insidePreview;

@@ -16,9 +16,6 @@ public class UpdateDesignerValidation {
         if (request.getPhone() == null || request.getPhone().isEmpty()) {
             errors.append("Phone cannot be empty. ");
         }
-        if (request.getBio() == null || request.getBio().isEmpty()) {
-            errors.append("Bio cannot be empty. ");
-        }
 
         return errors.toString();
     }
