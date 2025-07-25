@@ -279,12 +279,12 @@ public class ProfileServiceImpl implements ProfileService {
 
         Map<String, Object> profileData = buildProfileResponse(customer);
         if (!request.getRole().equalsIgnoreCase(Role.SCHOOL.getValue())) {
-            profileData.put("partner", createPartnerByProfile(customer));
+            profileData.put("partner", createPartnerByProfile(customer, request.getRole()));
         }
         return profileData;
     }
 
-    private Map<String, Object> createPartnerByProfile(Customer customer) {
+    private Map<String, Object> createPartnerByProfile(Customer customer, String role) {
         List<ThumbnailImage> thumbnailUrls = new ArrayList<>();
 
         Partner partner = partnerRepo.save(
@@ -298,7 +298,11 @@ public class ProfileServiceImpl implements ProfileService {
                         .thumbnailImages(thumbnailUrls)
                         .build()
         );
-        List<Package> packages = createPackage(partner);
+        if (role.equalsIgnoreCase(Role.DESIGNER.getValue())) {
+            List<Package> packages = createPackage(partner);
+            partner.setPackages(packages);
+        }
+        List<Package> packages = new ArrayList<>();
         partner.setPackages(packages);
         return buildPartnerResponse(partner);
     }
