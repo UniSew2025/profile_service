@@ -14,6 +14,9 @@ public class UpdateGarmentValidation {
         if (request.getName() == null || request.getName().isEmpty()) {
             errors.append("Name cannot be empty. ");
         }
+        if (request.getPhone() == null || request.getPhone().isEmpty()) {
+            errors.append("Phone cannot be empty. ");
+        }
 
         return errors.toString();
     }

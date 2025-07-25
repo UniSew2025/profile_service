@@ -170,7 +170,10 @@ public class ProfileServiceImpl implements ProfileService {
         String error = UpdateDesignerValidation.validate(request);
         if (!error.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ResponseObject.builder().message(error).build());
+                    .body(
+                            ResponseObject.builder()
+                                    .message(error)
+                                    .build());
         }
 
         Customer customer = customerRepo.findByAccountId(request.getAccountId()).orElse(null);
@@ -187,10 +190,10 @@ public class ProfileServiceImpl implements ProfileService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ResponseObject.builder().message("Designer not found for this account").build());
         }
-        List<ThumbnailImage> thumbnailImages = new ArrayList<>();
+//        List<ThumbnailImage> thumbnailImages = new ArrayList<>();
         partner.setStartTime(request.getStartDate());
         partner.setEndTime(request.getEndDate());
-        partner.setThumbnailImages(thumbnailImages);
+//        partner.setThumbnailImages(thumbnailImages);
         partner.setOutsidePreview(request.getOutsidePreview());
         partner.setInsidePreview(request.getInsidePreview());
 

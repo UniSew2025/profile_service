@@ -22,7 +22,6 @@ public class UpdateGarmentProfileRequest {
     String address;
     String outsidePreview;
     String insidePreview;
-    String bio;
     LocalTime startTime;
     LocalTime endTime;
 }

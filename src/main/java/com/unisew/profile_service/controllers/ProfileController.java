@@ -52,7 +52,6 @@ public class ProfileController {
         return profileService.updateGarmentProfile(request);
     }
 
-
     @GetMapping("/garment/list")
     @PreAuthorize("hasRole('ADMIN') or hasRole('SCHOOL')" )
     public ResponseEntity<ResponseObject> getAllGarmentProfile() {
