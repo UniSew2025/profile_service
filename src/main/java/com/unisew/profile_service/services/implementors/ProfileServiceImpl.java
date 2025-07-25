@@ -285,6 +285,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private Map<String, Object> createPartnerByProfile(Customer customer) {
+        List<ThumbnailImage> thumbnailUrls = new ArrayList<>();
+
         Partner partner = partnerRepo.save(
                 Partner.builder()
                         .customer(customer)
@@ -293,10 +295,50 @@ public class ProfileServiceImpl implements ProfileService {
                         .startTime(null)
                         .endTime(null)
                         .rating(0)
+                        .thumbnailImages(thumbnailUrls)
                         .build()
         );
-
+        List<Package> packages = createPackage(partner);
+        partner.setPackages(packages);
         return buildPartnerResponse(partner);
+    }
+
+    private List<Package> createPackage(Partner partner) {
+        List<Package> packages = new ArrayList<>();
+        Package pkg1 = Package.builder()
+                .name("Default Package")
+                .headerContent("This is a default package")
+                .deliveryDuration(1)
+                .revisionTime(1)
+                .fee(0)
+                .status(Status.PACKAGE_ACTIVE)
+                .partner(partner)
+                .build();
+        packages.add(pkg1);
+
+        Package pkg2 = Package.builder()
+                .name("Default Package")
+                .headerContent("This is a default package")
+                .deliveryDuration(7)
+                .revisionTime(3)
+                .fee(0)
+                .status(Status.PACKAGE_ACTIVE)
+                .partner(partner)
+                .build();
+        packages.add(pkg2);
+
+        Package pkg3 = Package.builder()
+                .name("Default Package")
+                .headerContent("This is a default package")
+                .deliveryDuration(7)
+                .revisionTime(5)
+                .fee(0)
+                .status(Status.PACKAGE_ACTIVE)
+                .partner(partner)
+                .build();
+        packages.add(pkg3);
+        packageRepo.saveAll(packages);
+        return packages;
     }
 
     @Override
